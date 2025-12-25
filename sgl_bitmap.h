@@ -1,3 +1,6 @@
+// SPDX-License-Identifier: MIT
+// Copyright (c) 2025 Zhijian Yan
+
 #ifndef __SGL_BITMAP_H
 #define __SGL_BITMAP_H
 

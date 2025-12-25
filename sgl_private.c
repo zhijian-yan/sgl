@@ -1,3 +1,6 @@
+// SPDX-License-Identifier: MIT
+// Copyright (c) 2025 Zhijian Yan
+
 #include "sgl_private.h"
 
 struct sgl_screen *__act_scr;
