@@ -68,14 +68,6 @@ typedef enum {
 
 #define SGL_ROTATE_DEFAULT SGL_ROTATE_0
 
-typedef enum {
-    SGL_CIRCLE_UPPER_RIGHT = 0x01,
-    SGL_CIRCLE_UPPER_LEFT = 0x02,
-    SGL_CIRCLE_LOWER_RIGHT = 0x04,
-    SGL_CIRCLE_LOWER_LEFT = 0x08,
-    SGL_CIRCLE_ALL = 0xFF,
-} sgl_circle_t;
-
 typedef struct sgl_screen *sgl_screen_handle_t;
 
 sgl_screen_handle_t sgl_create_screen(void *buffer, uint32_t buffer_size,

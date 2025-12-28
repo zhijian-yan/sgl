@@ -28,6 +28,14 @@ struct sgl_screen {
     void (*draw_pixel)(int32_t x, int32_t y, uint32_t color);
 };
 
+typedef enum {
+    SGL_CIRCLE_UPPER_RIGHT = 0x01,
+    SGL_CIRCLE_UPPER_LEFT = 0x02,
+    SGL_CIRCLE_LOWER_RIGHT = 0x04,
+    SGL_CIRCLE_LOWER_LEFT = 0x08,
+    SGL_CIRCLE_ALL = 0xFF,
+} sgl_circle_t;
+
 extern struct sgl_screen *__act_scr;
 
 void __sgl_rotate_point(int32_t *x, int32_t *y);
@@ -56,6 +64,17 @@ static inline void __sgl_draw_vpixel(int32_t x, int32_t y, int32_t len,
     for (len = (len > 0) ? 1 : -1; y != y1; y += len)
         __act_scr->draw_pixel(x, y, color);
 }
+
+void __sgl_draw_outlined_circle_section(int32_t xc, int32_t yc, int32_t r,
+                                        sgl_circle_t dir, uint32_t color);
+void __sgl_draw_filled_circle_section(int32_t xc, int32_t yc, int32_t r,
+                                      sgl_circle_t dir, uint32_t color);
+void __sgl_draw_outlined_ellipse_section(int32_t xc, int32_t yc, int32_t rx,
+                                         int32_t ry, sgl_circle_t dir,
+                                         uint32_t color);
+void __sgl_draw_filled_ellipse_section(int32_t xc, int32_t yc, int32_t rx,
+                                       int32_t ry, sgl_circle_t dir,
+                                       uint32_t color);
 
 #ifdef __cplusplus
 }
