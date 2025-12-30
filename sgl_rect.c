@@ -2,6 +2,7 @@
 // Copyright (c) 2025 Zhijian Yan
 
 #include "sgl_rect.h"
+#include "sgl_line.h"
 #include "sgl_private.h"
 
 void sgl_draw_rect(int32_t x, int32_t y, int32_t w, int32_t h, int is_filled,
@@ -47,6 +48,7 @@ void sgl_draw_rect(int32_t x, int32_t y, int32_t w, int32_t h, int is_filled,
 
 void sgl_draw_round_rect(int32_t x, int32_t y, int32_t w, int32_t h, int32_t r,
                          int is_filled, uint32_t color) {
+    int32_t mw, mh;
     if (w < 0) {
         x += w + 1;
         w = -w;
@@ -57,4 +59,33 @@ void sgl_draw_round_rect(int32_t x, int32_t y, int32_t w, int32_t h, int32_t r,
     }
     if (r < 0)
         r = -r;
+    if (r > (w >> 1))
+        r = (w >> 1);
+    if (r > (h >> 1))
+        r = (h >> 1);
+    mw = w - (r << 1);
+    mh = h - (r << 1);
+    if (w <= 2 || h <= 2) {
+        if (w > h) {
+            for (h += y; y < h; ++y)
+                sgl_draw_hline(x, y, w, color);
+        } else {
+            for (w += x; x < w; ++x)
+                sgl_draw_vline(x, y, h, color);
+        }
+        return;
+    }
+    if (is_filled == 0) {
+        sgl_draw_hline(x + r, y, mw, color);
+        sgl_draw_hline(x + r, y + h - 1, mw, color);
+        sgl_draw_vline(x, y + r, mh, color);
+        sgl_draw_vline(x + w - 1, y + r, mh, color);
+        __sgl_draw_circle_section(x + r, y + r, r, mw - 1, mh - 1, color);
+    } else {
+        sgl_draw_rect(x + r, y, mw, h, 1, color);
+        sgl_draw_rect(x, y + r, r, mh, 1, color);
+        sgl_draw_rect(x + w - r, y + r, r, mh, 1, color);
+        __sgl_draw_filled_circle_section(x + r, y + r, r, mw - 1, mh - 1,
+                                         color);
+    }
 }
