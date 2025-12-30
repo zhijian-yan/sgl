@@ -10,6 +10,7 @@ extern "C" {
 
 #include "sgl_bitmap.h"
 #include "sgl_circle.h"
+#include "sgl_color.h"
 #include "sgl_core.h"
 #include "sgl_line.h"
 #include "sgl_pixel.h"

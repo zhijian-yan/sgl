@@ -10,10 +10,6 @@ extern "C" {
 
 #include "sgl_config.h"
 
-#define SGL_COLOR_DARK 0
-#define SGL_COLOR_LIGHT 1
-#define SGL_COLOR_INVERSE 2
-
 typedef struct {
     int32_t left;
     int32_t top;

@@ -2,19 +2,20 @@
 // Copyright (c) 2025 Zhijian Yan
 
 #include "sgl_pixel.h"
+#include "sgl_color.h"
 #include "sgl_private.h"
 
 void sgl_draw_pixel_mono(int32_t x, int32_t y, uint32_t color) {
     switch (color) {
-    case SGL_COLOR_LIGHT:
-        ((uint8_t *)__act_scr->buffer)[(y >> 3) * __act_scr->hor_res + x] |=
-            (1 << (y & 7));
-        break;
-    case SGL_COLOR_DARK:
+    case SGL_MONO_BLACK:
         ((uint8_t *)__act_scr->buffer)[(y >> 3) * __act_scr->hor_res + x] &=
             ~(1 << (y & 7));
         break;
-    case SGL_COLOR_INVERSE:
+    case SGL_MONO_WHITE:
+        ((uint8_t *)__act_scr->buffer)[(y >> 3) * __act_scr->hor_res + x] |=
+            (1 << (y & 7));
+        break;
+    case SGL_MONO_INVERT:
         ((uint8_t *)__act_scr->buffer)[(y >> 3) * __act_scr->hor_res + x] ^=
             (1 << (y & 7));
         break;
