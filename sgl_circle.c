@@ -92,26 +92,54 @@ void __sgl_draw_filled_circle_section(int32_t xc, int32_t yc, int32_t r,
     }
 }
 
-void sgl_draw_circle(int32_t xc, int32_t yc, int32_t r, int32_t is_filled,
+void __sgl_draw_circle(int32_t xc, int32_t yc, int32_t r, int32_t offset,
+                       int32_t is_filled, uint32_t color) {
+    if (is_filled == 0 && r > 0) {
+        if (offset == 0) {
+            sgl_draw_point(xc + r, yc, color); // 8, 1
+            sgl_draw_point(xc, yc + r, color); // 3, 2
+            sgl_draw_point(xc - r, yc, color); // 5, 4
+            sgl_draw_point(xc, yc - r, color); // 6, 7
+        }
+        __sgl_draw_circle_section(xc, yc, r, offset, offset, color);
+    } else {
+        if (offset == 0) {
+            sgl_draw_point(xc, yc, color);         // xc, yc
+            sgl_draw_hline(xc + 1, yc, r, color);  // 8, 1
+            sgl_draw_vline(xc, yc + 1, r, color);  // 3, 2
+            sgl_draw_hline(xc - 1, yc, -r, color); // 5, 4
+            sgl_draw_vline(xc, yc - 1, -r, color); // 6, 7
+        }
+        __sgl_draw_filled_circle_section(xc, yc, r, offset, offset, color);
+    }
+}
+
+void sgl_draw_circle(int32_t x, int32_t y, int32_t d, int32_t is_filled,
                      uint32_t color) {
+    int32_t r;
+    if (d < 0)
+        d = -d;
+    if (__sgl_check_rect(x, y, x + d, y + d))
+        return;
+    if (d == 2) {
+        sgl_draw_hline(x, y, 2, color);
+        sgl_draw_hline(x, y + 1, 2, color);
+        return;
+    }
+    r = d >> 1;
+    if (d & 0x1)
+        __sgl_draw_circle(x + r, y + r, r, 0, is_filled, color);
+    else
+        __sgl_draw_circle(x + r, y + r, r, -1, is_filled, color);
+}
+
+void sgl_draw_circle_center(int32_t xc, int32_t yc, int32_t r,
+                            int32_t is_filled, uint32_t color) {
     if (r < 0)
         r = -r;
     if (__sgl_check_rect(xc - r, yc - r, xc + r, yc + r))
         return;
-    if (is_filled == 0 && r > 0) {
-        sgl_draw_point(xc + r, yc, color); // 8, 1
-        sgl_draw_point(xc, yc + r, color); // 3, 2
-        sgl_draw_point(xc - r, yc, color); // 5, 4
-        sgl_draw_point(xc, yc - r, color); // 6, 7
-        __sgl_draw_circle_section(xc, yc, r, 0, 0, color);
-    } else {
-        sgl_draw_point(xc, yc, color);         // xc, yc
-        sgl_draw_hline(xc + 1, yc, r, color);  // 8, 1
-        sgl_draw_vline(xc, yc + 1, r, color);  // 3, 2
-        sgl_draw_hline(xc - 1, yc, -r, color); // 5, 4
-        sgl_draw_vline(xc, yc - 1, -r, color); // 6, 7
-        __sgl_draw_filled_circle_section(xc, yc, r, 0, 0, color);
-    }
+    __sgl_draw_circle(xc, yc, r, 0, is_filled, color);
 }
 
 void __sgl_draw_ellipse_section(int32_t xc, int32_t yc, int32_t rx, int32_t ry,
