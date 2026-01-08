@@ -144,39 +144,64 @@ void sgl_draw_circle_center(int32_t xc, int32_t yc, int32_t r,
 
 void __sgl_draw_ellipse_section(int32_t xc, int32_t yc, int32_t rx, int32_t ry,
                                 uint32_t color) {
-    int32_t x = 0, y = ry, d1, d2;
-    int32_t rx_2 = rx * rx;
-    int32_t ry_2 = ry * ry;
-    d1 = 4 * ry_2 + rx_2 * (1 - 4 * ry);
-    while (2 * ry_2 * (x + 1) < rx_2 * (2 * y - 1)) {
-        if (d1 <= 0) {
-            d1 += 4 * ry_2 * (2 * x + 3);
-            ++x;
-        } else {
-            d1 += 4 * (ry_2 * (2 * x + 3) + rx_2 * (-2 * y + 2));
-            ++x;
-            --y;
+    int32_t x, y, err, rxrx2, ryry2, xchg, ychg, stopx, stopy;
+    rxrx2 = (rx * rx) << 1;
+    ryry2 = (ry * ry) << 1;
+    x = rx;
+    y = 0;
+    xchg = (1 - rx - rx) * (ryry2 >> 1);
+    ychg = rxrx2 >> 1;
+    err = 0;
+    stopx = ryry2 * rx;
+    stopy = 0;
+    while (1) {
+        ++y;
+        stopy += rxrx2;
+        err += ychg;
+        ychg += rxrx2;
+        if (2 * err + xchg > 0) {
+            --x;
+            stopx -= ryry2;
+            err += xchg;
+            xchg += ryry2;
         }
-        sgl_draw_point(xc + x, yc + y, color);
-        sgl_draw_point(xc + x, yc - y, color);
-        sgl_draw_point(xc - x, yc + y, color);
-        sgl_draw_point(xc - x, yc - y, color);
+        if (stopx <= stopy)
+            break;
+        sgl_draw_point(xc + x, yc + y, color); // 1
+        sgl_draw_point(xc - x, yc + y, color); // 4
+        sgl_draw_point(xc - x, yc - y, color); // 5
+        sgl_draw_point(xc + x, yc - y, color); // 8
     }
-    d2 = ry_2 * (2 * x + 1) * (2 * x + 1) +
-         4 * (rx_2 * (y - 1) * (y - 1) - rx_2 * ry_2);
-    while (y > 0) {
-        if (d2 <= 0) {
-            d2 += 4 * (ry_2 * (2 * x + 2) + rx_2 * (-2 * y + 3));
-            ++x;
+    x = 0;
+    y = ry;
+    ychg = (1 - ry - ry) * (rxrx2 >> 1);
+    xchg = ryry2 >> 1;
+    err = 0;
+    stopy = rxrx2 * ry;
+    stopx = 0;
+    while (1) {
+        ++x;
+        stopx += ryry2;
+        err += xchg;
+        xchg += ryry2;
+        if (2 * err + ychg > 0) {
             --y;
-        } else {
-            d2 += 4 * (rx_2 * (-2 * y + 3));
-            --y;
+            stopy -= rxrx2;
+            err += ychg;
+            ychg += rxrx2;
         }
-        sgl_draw_point(xc + x, yc + y, color);
-        sgl_draw_point(xc + x, yc - y, color);
-        sgl_draw_point(xc - x, yc + y, color);
-        sgl_draw_point(xc - x, yc - y, color);
+        if (stopx >= stopy)
+            break;
+        sgl_draw_point(xc + x, yc + y, color); // 2
+        sgl_draw_point(xc - x, yc + y, color); // 3
+        sgl_draw_point(xc - x, yc - y, color); // 6
+        sgl_draw_point(xc + x, yc - y, color); // 7
+    }
+    if (stopx == stopy) {
+        sgl_draw_point(xc + x, yc + y, color); // 1, 2
+        sgl_draw_point(xc - x, yc + y, color); // 3, 4
+        sgl_draw_point(xc - x, yc - y, color); // 5, 6
+        sgl_draw_point(xc + x, yc - y, color); // 7, 8
     }
 }
 
