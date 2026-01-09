@@ -18,11 +18,12 @@ Y
 void __sgl_draw_circle_section(int32_t xc, int32_t yc, int32_t r,
                                int32_t offset_x, int32_t offset_y,
                                uint32_t color) {
-    int32_t x = 0;
-    int32_t y = r;
-    int32_t f = 1 - r;
-    int32_t ddF_x = 1;
-    int32_t ddF_y = -2 * r;
+    int32_t x, y, f, ddF_x, ddF_y;
+    x = 0;
+    y = r;
+    f = 1 - r;
+    ddF_x = 1;
+    ddF_y = -2 * r;
     while (1) {
         if (f >= 0) {
             --y;
@@ -54,11 +55,12 @@ void __sgl_draw_circle_section(int32_t xc, int32_t yc, int32_t r,
 void __sgl_draw_filled_circle_section(int32_t xc, int32_t yc, int32_t r,
                                       int32_t offset_x, int32_t offset_y,
                                       uint32_t color) {
-    int32_t x = 0;
-    int32_t y = r;
-    int32_t f = 1 - r;
-    int32_t ddF_x = 1;
-    int32_t ddF_y = -2 * r;
+    int32_t x, y, f, ddF_x, ddF_y, len;
+    x = 0;
+    y = r;
+    f = 1 - r;
+    ddF_x = 1;
+    ddF_y = -2 * r;
     while (1) {
         if (f >= 0) {
             --y;
@@ -70,16 +72,17 @@ void __sgl_draw_filled_circle_section(int32_t xc, int32_t yc, int32_t r,
         f += ddF_x;
         if (x >= y)
             break;
-        sgl_draw_hline(xc + x + 1 + offset_x, yc + x + offset_y, y - x,
+        len = y - x;
+        sgl_draw_hline(xc + x + 1 + offset_x, yc + x + offset_y, len,
                        color); // 1
-        sgl_draw_vline(xc + x + offset_x, yc + x + 1 + offset_y, y - x,
-                       color);                                       // 2
-        sgl_draw_vline(xc - x, yc + x + 1 + offset_y, y - x, color); // 3
-        sgl_draw_hline(xc - y, yc + x + offset_y, y - x, color);     // 4
-        sgl_draw_hline(xc - y, yc - x, y - x, color);                // 5
-        sgl_draw_vline(xc - x, yc - y, y - x, color);                // 6
-        sgl_draw_vline(xc + x + offset_x, yc - y, y - x, color);     // 7
-        sgl_draw_hline(xc + x + 1 + offset_x, yc - x, y - x, color); // 8
+        sgl_draw_vline(xc + x + offset_x, yc + x + 1 + offset_y, len,
+                       color);                                     // 2
+        sgl_draw_vline(xc - x, yc + x + 1 + offset_y, len, color); // 3
+        sgl_draw_hline(xc - y, yc + x + offset_y, len, color);     // 4
+        sgl_draw_hline(xc - y, yc - x, len, color);                // 5
+        sgl_draw_vline(xc - x, yc - y, len, color);                // 6
+        sgl_draw_vline(xc + x + offset_x, yc - y, len, color);     // 7
+        sgl_draw_hline(xc + x + 1 + offset_x, yc - x, len, color); // 8
     }
     if (x == y)
         ++x;
