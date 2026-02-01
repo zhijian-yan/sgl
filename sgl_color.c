@@ -5,17 +5,19 @@
 
 void sgl_color_hsv2rgb(uint16_t h, uint8_t s, uint8_t v, uint8_t *r, uint8_t *g,
                        uint8_t *b) {
+    uint8_t sv_r8, i, f, p, q, t;
     if (s == 0) {
         *r = *g = *b = v;
         return;
     }
-    uint8_t region = h / 60;
-    uint8_t f = (uint8_t)((h - region * 60) * 255 / 60);
-    uint16_t sv = (uint16_t)s * v;
-    uint8_t p = (uint8_t)((v * (255 - s) + 128) >> 8);
-    uint8_t q = (uint8_t)((v * 255 - ((sv * f + 128) >> 8) + 128) >> 8);
-    uint8_t t = (uint8_t)((v * 255 - ((sv * (255 - f) + 128) >> 8) + 128) >> 8);
-    switch (region) {
+    sv_r8 = (s * v) >> 8;
+    h = (h * 1536) / 360;
+    i = h >> 8;
+    f = h & 255;
+    p = v - sv_r8;
+    q = v - ((sv_r8 * f) >> 8);
+    t = v - ((sv_r8 * (255 - f)) >> 8);
+    switch (i) {
     case 0:
         *r = v;
         *g = t;
