@@ -8,55 +8,74 @@
 void sgl_show_mono_bitmap(sgl_screen_t *scr, int32_t x, int32_t y, int32_t w,
                           int32_t h, const uint8_t *bitmap, sgl_dir_t dir,
                           uint32_t color) {
-    int32_t offset_x, offset_y, temp, index, i, j;
-    uint32_t mask;
+    int32_t dx = x, dy = y, temp;
+    uint32_t bmp_w = w, bmp_h = h, bmp_x, bmp_y, mask, index, i, j;
+    if (dir == SGL_DIR_UP || dir == SGL_DIR_DOWN) {
+        if (sgl_clip_line(&x, &w, scr->visible.left, scr->visible.right))
+            return;
+        if (sgl_clip_line(&y, &h, scr->visible.top, scr->visible.bottom))
+            return;
+    } else {
+        if (sgl_clip_line(&x, &h, scr->visible.left, scr->visible.right))
+            return;
+        if (sgl_clip_line(&y, &w, scr->visible.top, scr->visible.bottom))
+            return;
+    }
+    dx = x - dx;
+    dy = y - dy;
+    x -= scr->offset_x;
+    y -= scr->offset_y;
     switch (dir) {
     case SGL_DIR_UP:
-        offset_x = x;
-        offset_y = y;
-        for (j = 0; j < h; ++j) {
-            index = (j >> 3) * w;
-            mask = 1 << (j & 7);
-            temp = offset_y + j;
-            for (i = 0; i < w; ++i)
-                if ((bitmap[i + index] & mask))
-                    sgl_draw_point(scr, offset_x + i, temp, color);
+        for (i = 0; i < h; ++i) {
+            bmp_y = dy + i;
+            index = (bmp_y >> 3) * bmp_w;
+            mask = 1U << (bmp_y & 7);
+            temp = y + i;
+            for (j = 0; j < w; ++j) {
+                bmp_x = dx + j;
+                if (bitmap[index + bmp_x] & mask)
+                    scr->draw_pixel(scr, x + j, temp, color);
+            }
         }
         break;
     case SGL_DIR_RIGHT:
-        offset_x = x + h - 1;
-        offset_y = y;
-        for (j = 0; j < h; ++j) {
-            index = (j >> 3) * w;
-            mask = 1 << (j & 7);
-            temp = offset_x - j;
-            for (i = 0; i < w; ++i)
-                if ((bitmap[i + index] & mask))
-                    sgl_draw_point(scr, temp, offset_y + i, color);
+        for (i = 0; i < h; ++i) {
+            bmp_y = (bmp_h - 1) - dx - i;
+            index = (bmp_y >> 3) * bmp_w;
+            mask = 1U << (bmp_y & 7);
+            temp = x + i;
+            for (j = 0; j < w; ++j) {
+                bmp_x = dy + j;
+                if (bitmap[index + bmp_x] & mask)
+                    scr->draw_pixel(scr, temp, y + j, color);
+            }
         }
         break;
     case SGL_DIR_LEFT:
-        offset_x = x;
-        offset_y = y + w - 1;
-        for (j = 0; j < h; ++j) {
-            index = (j >> 3) * w;
-            mask = 1 << (j & 7);
-            temp = offset_x + j;
-            for (i = 0; i < w; ++i)
-                if ((bitmap[i + index] & mask))
-                    sgl_draw_point(scr, temp, offset_y - i, color);
+        for (i = 0; i < h; ++i) {
+            bmp_y = dx + i;
+            index = (bmp_y >> 3) * bmp_w;
+            mask = 1U << (bmp_y & 7);
+            temp = x + i;
+            for (j = 0; j < w; ++j) {
+                bmp_x = (bmp_w - 1) - dy - j;
+                if (bitmap[index + bmp_x] & mask)
+                    scr->draw_pixel(scr, temp, y + j, color);
+            }
         }
         break;
     case SGL_DIR_DOWN:
-        offset_x = x + w - 1;
-        offset_y = y + h - 1;
-        for (j = 0; j < h; ++j) {
-            index = (j >> 3) * w;
-            mask = 1 << (j & 7);
-            temp = offset_y - j;
-            for (i = 0; i < w; ++i)
-                if ((bitmap[i + index] & mask))
-                    sgl_draw_point(scr, offset_x - i, temp, color);
+        for (i = 0; i < h; ++i) {
+            bmp_y = (bmp_h - 1) - dy - i;
+            index = (bmp_y >> 3) * bmp_w;
+            mask = 1U << (bmp_y & 7);
+            temp = y + i;
+            for (j = 0; j < w; ++j) {
+                bmp_x = (bmp_w - 1) - dx - j;
+                if (bitmap[index + bmp_x] & mask)
+                    scr->draw_pixel(scr, x + j, temp, color);
+            }
         }
         break;
     }
