@@ -89,7 +89,7 @@ struct sgl_screen {
     sgl_rect_t invalidate;
     sgl_rotate_t rotate;
     void (*paint)(sgl_screen_t *scr);
-    void (*flush)(void *buffer, uint32_t buffer_size);
+    void (*flush)(void *buffer, sgl_rect_t *visible);
     void (*draw_pixel)(sgl_screen_t *scr, int32_t x, int32_t y, uint32_t color);
 };
 
@@ -99,7 +99,7 @@ void sgl_handler(sgl_screen_t *scr);
 void sgl_set_buffer(sgl_screen_t *scr, void *buffer, uint32_t buffer_size);
 void sgl_set_paint(sgl_screen_t *scr, void (*paint)(sgl_screen_t *scr));
 void sgl_set_flush(sgl_screen_t *scr,
-                   void (*flush)(void *buffer, uint32_t buffer_size));
+                   void (*flush)(void *buffer, sgl_rect_t *visible));
 void sgl_set_draw_pixel(sgl_screen_t *scr,
                         void (*draw_pixel)(sgl_screen_t *scr, int32_t x,
                                            int32_t y, uint32_t color));

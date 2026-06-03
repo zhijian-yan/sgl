@@ -22,45 +22,33 @@ int sgl_init(sgl_screen_t *scr, void *buffer, uint32_t buffer_size,
 }
 
 void sgl_handler(sgl_screen_t *scr) {
-    if (!scr || !scr->paint || !scr->flush || !scr->buffer)
-        return;
     scr->paint(scr);
-    scr->flush(scr->buffer, scr->buffer_size);
+    scr->flush(scr->buffer, &scr->visible);
     ++scr->fcount;
 }
 
 void sgl_set_buffer(sgl_screen_t *scr, void *buffer, uint32_t buffer_size) {
-    if (!scr || !buffer)
-        return;
     scr->buffer = buffer;
     scr->buffer_size = buffer_size;
 }
 
 void sgl_set_paint(sgl_screen_t *scr, void (*paint)(sgl_screen_t *scr)) {
-    if (!scr || !paint)
-        return;
     scr->paint = paint;
 }
 
 void sgl_set_flush(sgl_screen_t *scr,
-                   void (*flush)(void *buffer, uint32_t buffer_size)) {
-    if (!scr || !flush)
-        return;
+                   void (*flush)(void *buffer, sgl_rect_t *visible)) {
     scr->flush = flush;
 }
 
 void sgl_set_draw_pixel(sgl_screen_t *scr,
                         void (*draw_pixel)(sgl_screen_t *scr, int32_t x,
                                            int32_t y, uint32_t color)) {
-    if (!scr || !draw_pixel)
-        return;
     scr->draw_pixel = draw_pixel;
 }
 
 void sgl_set_visible(sgl_screen_t *scr, int32_t left, int32_t top,
                      int32_t right, int32_t bottom) {
-    if (!scr)
-        return;
     if (left < 0)
         left = 0;
     if (top < 0)
@@ -73,14 +61,10 @@ void sgl_set_visible(sgl_screen_t *scr, int32_t left, int32_t top,
 }
 
 void sgl_reset_visible(sgl_screen_t *scr) {
-    if (!scr)
-        return;
     sgl_set_rect(&scr->visible, 0, 0, scr->max_x, scr->max_y);
 }
 
 void sgl_set_screen_rotation(sgl_screen_t *scr, sgl_rotate_t rotate) {
-    if (!scr)
-        return;
     scr->rotate = rotate;
     switch (rotate) {
     case SGL_ROTATE_0:
@@ -97,20 +81,10 @@ void sgl_set_screen_rotation(sgl_screen_t *scr, sgl_rotate_t rotate) {
     sgl_set_rect(&scr->visible, 0, 0, scr->max_x, scr->max_y);
 }
 
-uint32_t sgl_get_fcount(sgl_screen_t *scr) {
-    if (!scr)
-        return 0;
-    return scr->fcount;
-}
+uint32_t sgl_get_fcount(sgl_screen_t *scr) { return scr->fcount; }
 
-void sgl_reset_fcount(sgl_screen_t *scr) {
-    if (!scr)
-        return;
-    scr->fcount = 0;
-}
+void sgl_reset_fcount(sgl_screen_t *scr) { scr->fcount = 0; }
 
 void sgl_clear_screen(sgl_screen_t *scr, uint8_t value) {
-    if (!scr || !scr->buffer)
-        return;
     memset(scr->buffer, value, scr->buffer_size);
 }
