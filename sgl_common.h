@@ -124,7 +124,35 @@ static inline void sgl_set_rect(sgl_rect_t *rect, int32_t left, int32_t top,
     rect->bottom = bottom;
 }
 
-int sgl_clip_line(int32_t *start, int32_t *len, int32_t min, int32_t max);
+static inline int sgl_clip_line(int32_t *start, int32_t *len, int32_t min,
+                                int32_t max) {
+    int32_t end;
+    if (*len > 0) {
+        if (*start > max)
+            return -1;
+        end = *start + *len - 1;
+        if (end < min)
+            return -1;
+        if (*start < min)
+            *start = min;
+        if (end > max)
+            end = max;
+        *len = end - *start + 1;
+    } else if (*len < 0) {
+        if (*start < min)
+            return -1;
+        end = *start + *len + 1;
+        if (end > max)
+            return -1;
+        if (end < min)
+            end = min;
+        if (*start > max)
+            *start = max;
+        *len = end - *start - 1;
+    }
+    return 0;
+}
+
 void sgl_draw_circle_section(sgl_screen_t *scr, int32_t xc, int32_t yc,
                              int32_t r, int32_t offset_x, int32_t offset_y,
                              uint32_t color);
