@@ -83,7 +83,8 @@ void sgl_show_mono_bitmap(sgl_screen_t *scr, int32_t x, int32_t y, int32_t w,
 
 void sgl_show_rgb565_bitmap(sgl_screen_t *scr, int32_t x, int32_t y, int32_t w,
                             int32_t h, const uint16_t *bitmap, sgl_dir_t dir) {
-    int32_t dx = x, dy = y, bmp_w = w, bmp_h = h, temp, index, i, j;
+    int32_t dx = x, dy = y, temp;
+    uint32_t bmp_w = w, bmp_h = h, bmp_x, bmp_y, index, i, j;
     if (dir == SGL_DIR_UP || dir == SGL_DIR_DOWN) {
         if (sgl_clip_line(&x, &w, scr->visible.left, scr->visible.right))
             return;
@@ -101,37 +102,47 @@ void sgl_show_rgb565_bitmap(sgl_screen_t *scr, int32_t x, int32_t y, int32_t w,
     y -= scr->offset_y;
     switch (dir) {
     case SGL_DIR_UP:
-        for (j = 0; j < h; ++j) {
-            temp = y + j;
-            index = (dy + j) * bmp_h;
-            for (i = 0; i < w; ++i)
-                scr->draw_pixel(scr, x + i, temp, bitmap[dx + i + index]);
+        for (i = 0; i < h; ++i) {
+            bmp_y = dy + i;
+            index = bmp_y * bmp_w;
+            temp = y + i;
+            for (j = 0; j < w; ++j) {
+                bmp_x = dx + j;
+                scr->draw_pixel(scr, x + j, temp, bitmap[index + bmp_x]);
+            }
         }
         break;
     case SGL_DIR_RIGHT:
-        for (j = 0; j < h; ++j) {
-            temp = x + j;
-            index = ((bmp_h - 1) - (dx + j)) * bmp_w;
-            for (i = 0; i < w; ++i)
-                scr->draw_pixel(scr, temp, y + i, bitmap[dy + i + index]);
+        for (i = 0; i < h; ++i) {
+            bmp_y = (bmp_h - 1) - dx - i;
+            index = bmp_y * bmp_w;
+            temp = x + i;
+            for (j = 0; j < w; ++j) {
+                bmp_x = dy + j;
+                scr->draw_pixel(scr, temp, y + j, bitmap[index + bmp_x]);
+            }
         }
         break;
     case SGL_DIR_LEFT:
-        for (j = 0; j < h; ++j) {
-            temp = x + j;
-            index = (dx + j) * bmp_w;
-            for (i = 0; i < w; ++i)
-                scr->draw_pixel(scr, temp, y + i,
-                                bitmap[(bmp_w - 1) - (dy + i) + index]);
+        for (i = 0; i < h; ++i) {
+            bmp_y = dx + i;
+            index = bmp_y * bmp_w;
+            temp = x + i;
+            for (j = 0; j < w; ++j) {
+                bmp_x = (bmp_w - 1) - dy - j;
+                scr->draw_pixel(scr, temp, y + j, bitmap[index + bmp_x]);
+            }
         }
         break;
     case SGL_DIR_DOWN:
-        for (j = 0; j < h; ++j) {
-            temp = y + j;
-            index = ((bmp_h - 1) - (dy + j)) * bmp_h;
-            for (i = 0; i < w; ++i)
-                scr->draw_pixel(scr, x + i, temp,
-                                bitmap[(bmp_w - 1) - (dx + i) + index]);
+        for (i = 0; i < h; ++i) {
+            bmp_y = (bmp_h - 1) - dy - i;
+            index = bmp_y * bmp_w;
+            temp = y + i;
+            for (j = 0; j < w; ++j) {
+                bmp_x = (bmp_w - 1) - dx - j;
+                scr->draw_pixel(scr, x + j, temp, bitmap[index + bmp_x]);
+            }
         }
         break;
     }
