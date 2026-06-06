@@ -10,7 +10,8 @@ extern "C" {
 
 #include "sgl_core.h"
 
-static inline void sgl_rotate_point(sgl_screen_t *scr, int32_t *x, int32_t *y) {
+static inline void sgl_rotate_point_ccw(sgl_screen_t *scr, int32_t *x,
+                                        int32_t *y) {
     int32_t temp = *x;
     switch (scr->rotate) {
     case SGL_ROTATE_0:
@@ -30,8 +31,29 @@ static inline void sgl_rotate_point(sgl_screen_t *scr, int32_t *x, int32_t *y) {
     }
 }
 
-static inline void sgl_rotate_rect(sgl_screen_t *scr, int32_t *x, int32_t *y,
-                                   int32_t *w, int32_t *h) {
+static inline void sgl_rotate_point_cw(sgl_screen_t *scr, int32_t *x,
+                                       int32_t *y) {
+    int32_t temp = *x;
+    switch (scr->rotate) {
+    case SGL_ROTATE_0:
+        break;
+    case SGL_ROTATE_90:
+        *x = *y;
+        *y = scr->max_y - temp;
+        break;
+    case SGL_ROTATE_180:
+        *x = scr->max_x - *x;
+        *y = scr->max_y - *y;
+        break;
+    case SGL_ROTATE_270:
+        *x = scr->max_x - *y;
+        *y = temp;
+        break;
+    }
+}
+
+static inline void sgl_rotate_rect_ccw(sgl_screen_t *scr, int32_t *x,
+                                       int32_t *y, int32_t *w, int32_t *h) {
     int32_t temp1 = *x;
     int32_t temp2 = *w;
     switch (scr->rotate) {
@@ -54,6 +76,34 @@ static inline void sgl_rotate_rect(sgl_screen_t *scr, int32_t *x, int32_t *y,
         *y = scr->max_x - temp1;
         *w = *h;
         *h = -temp2;
+        break;
+    }
+}
+
+static inline void sgl_rotate_rect_cw(sgl_screen_t *scr, int32_t *x, int32_t *y,
+                                      int32_t *w, int32_t *h) {
+    int32_t temp1 = *x;
+    int32_t temp2 = *w;
+    switch (scr->rotate) {
+    case SGL_ROTATE_0:
+        break;
+    case SGL_ROTATE_90:
+        *x = *y;
+        *y = scr->max_y - temp1;
+        *w = *h;
+        *h = -temp2;
+        break;
+    case SGL_ROTATE_180:
+        *x = scr->max_x - *x;
+        *y = scr->max_y - *y;
+        *w = -*w;
+        *h = -*h;
+        break;
+    case SGL_ROTATE_270:
+        *x = scr->max_x - *y;
+        *y = temp1;
+        *w = -*h;
+        *h = temp2;
         break;
     }
 }

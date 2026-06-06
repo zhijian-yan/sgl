@@ -9,13 +9,15 @@ void sgl_draw_pixel_mono(sgl_screen_t *scr, int32_t x, int32_t y,
     switch (color) {
     case SGL_MONO_BLACK:
         ((uint8_t *)scr->buffer)[(y >> 3) * scr->hor_res + x] &=
-            ~(1 << (y & 7));
+            ~(1U << (y & 7));
         break;
     case SGL_MONO_WHITE:
-        ((uint8_t *)scr->buffer)[(y >> 3) * scr->hor_res + x] |= (1 << (y & 7));
+        ((uint8_t *)scr->buffer)[(y >> 3) * scr->hor_res + x] |=
+            (1U << (y & 7));
         break;
     case SGL_MONO_INVERT:
-        ((uint8_t *)scr->buffer)[(y >> 3) * scr->hor_res + x] ^= (1 << (y & 7));
+        ((uint8_t *)scr->buffer)[(y >> 3) * scr->hor_res + x] ^=
+            (1U << (y & 7));
         break;
     }
 }

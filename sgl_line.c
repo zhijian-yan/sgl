@@ -7,7 +7,7 @@
 void sgl_draw_point(sgl_screen_t *scr, int32_t x, int32_t y, uint32_t color) {
     if (sgl_check_rect(scr, x, y, x, y))
         return;
-    sgl_rotate_point(scr, &x, &y);
+    sgl_rotate_point_ccw(scr, &x, &y);
     x -= scr->offset_x;
     y -= scr->offset_y;
     scr->draw_pixel(scr, x, y, color);
@@ -19,7 +19,7 @@ void sgl_draw_hline(sgl_screen_t *scr, int32_t x, int32_t y, int32_t len,
         return;
     if (sgl_clip_line(&x, &len, scr->visible.left, scr->visible.right))
         return;
-    sgl_rotate_point(scr, &x, &y);
+    sgl_rotate_point_ccw(scr, &x, &y);
     x -= scr->offset_x;
     y -= scr->offset_y;
     switch (scr->rotate) {
@@ -44,7 +44,7 @@ void sgl_draw_vline(sgl_screen_t *scr, int32_t x, int32_t y, int32_t len,
         return;
     if (sgl_clip_line(&y, &len, scr->visible.top, scr->visible.bottom))
         return;
-    sgl_rotate_point(scr, &x, &y);
+    sgl_rotate_point_ccw(scr, &x, &y);
     x -= scr->offset_x;
     y -= scr->offset_y;
     switch (scr->rotate) {
@@ -66,8 +66,8 @@ void sgl_draw_vline(sgl_screen_t *scr, int32_t x, int32_t y, int32_t len,
 void sgl_draw_line(sgl_screen_t *scr, int32_t x0, int32_t y0, int32_t x1,
                    int32_t y1, uint32_t color) {
     int32_t dx, dy, sx, sy, err;
-    sgl_rotate_point(scr, &x0, &y0);
-    sgl_rotate_point(scr, &x1, &y1);
+    sgl_rotate_point_ccw(scr, &x0, &y0);
+    sgl_rotate_point_ccw(scr, &x1, &y1);
     x0 -= scr->offset_x;
     y0 -= scr->offset_y;
     x1 -= scr->offset_x;
@@ -102,5 +102,5 @@ void sgl_draw_line(sgl_screen_t *scr, int32_t x0, int32_t y0, int32_t x1,
             }
         }
     }
-    //    sgl_draw_point(x1, y1, color);
+    sgl_draw_point(scr, x1, y1, color);
 }

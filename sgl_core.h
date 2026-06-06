@@ -20,9 +20,9 @@ typedef enum {
 
 typedef enum {
     SGL_DIR_UP = 0,
+    SGL_DIR_RIGHT,
     SGL_DIR_DOWN,
     SGL_DIR_LEFT,
-    SGL_DIR_RIGHT,
 } sgl_dir_t;
 
 #define SGL_DIR_DEFAULT SGL_DIR_UP
