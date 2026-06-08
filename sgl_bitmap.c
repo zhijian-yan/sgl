@@ -5,6 +5,55 @@
 #include "sgl_common.h"
 #include "sgl_line.h"
 
+static inline void sgl_rotate_bitmap(sgl_screen_t *scr, int32_t *x, int32_t *y,
+                                     int32_t *dx, int32_t *dy, int32_t w,
+                                     int32_t h, uint32_t bmp_w, uint32_t bmp_h,
+                                     sgl_dir_t *dir) {
+    int32_t temp;
+    sgl_rotate_point_ccw(scr, x, y);
+    temp = *dx;
+    switch (scr->rotate) {
+    case SGL_ROTATE_0:
+        break;
+    case SGL_ROTATE_90:
+        if (*dir == SGL_DIR_UP || *dir == SGL_DIR_DOWN) {
+            *x -= h - 1;
+            *dx = bmp_h - *dy - h;
+            *dy = temp;
+        } else {
+            *x -= w - 1;
+            *dx = bmp_w - *dy - w;
+            *dy = temp;
+        }
+        break;
+    case SGL_ROTATE_180:
+        if (*dir == SGL_DIR_UP || *dir == SGL_DIR_DOWN) {
+            *x -= w - 1;
+            *y -= h - 1;
+            *dx = bmp_w - *dx - w;
+            *dy = bmp_h - *dy - h;
+        } else {
+            *x -= h - 1;
+            *y -= w - 1;
+            *dx = bmp_h - *dx - h;
+            *dy = bmp_w - *dy - w;
+        }
+        break;
+    case SGL_ROTATE_270:
+        if (*dir == SGL_DIR_UP || *dir == SGL_DIR_DOWN) {
+            *y -= w - 1;
+            *dx = *dy;
+            *dy = bmp_w - temp - w;
+        } else {
+            *y -= h - 1;
+            *dx = *dy;
+            *dy = bmp_h - temp - h;
+        }
+        break;
+    }
+    *dir = (*dir + scr->rotate) & 3;
+}
+
 void sgl_show_mono_bitmap(sgl_screen_t *scr, int32_t x, int32_t y, int32_t w,
                           int32_t h, const uint8_t *bitmap, sgl_dir_t dir,
                           uint32_t color) {
@@ -23,6 +72,7 @@ void sgl_show_mono_bitmap(sgl_screen_t *scr, int32_t x, int32_t y, int32_t w,
     }
     dx = x - dx;
     dy = y - dy;
+    sgl_rotate_bitmap(scr, &x, &y, &dx, &dy, w, h, bmp_w, bmp_h, &dir);
     x -= scr->offset_x;
     y -= scr->offset_y;
     switch (dir) {
@@ -98,6 +148,7 @@ void sgl_show_rgb565_bitmap(sgl_screen_t *scr, int32_t x, int32_t y, int32_t w,
     }
     dx = x - dx;
     dy = y - dy;
+    sgl_rotate_bitmap(scr, &x, &y, &dx, &dy, w, h, bmp_w, bmp_h, &dir);
     x -= scr->offset_x;
     y -= scr->offset_y;
     switch (dir) {
