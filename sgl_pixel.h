@@ -14,6 +14,8 @@ void sgl_draw_pixel_mono(sgl_screen_t *scr, int32_t x, int32_t y,
                          uint32_t color);
 void sgl_draw_pixel_rgb565(sgl_screen_t *scr, int32_t x, int32_t y,
                            uint32_t color);
+void sgl_draw_pixel_rgb565_swap(sgl_screen_t *scr, int32_t x, int32_t y,
+                                uint32_t color);
 
 #ifdef __cplusplus
 }
