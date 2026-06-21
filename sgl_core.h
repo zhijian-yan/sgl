@@ -76,20 +76,20 @@ typedef struct sgl_screen sgl_screen_t;
 struct sgl_screen {
     void *buffer;
     uint32_t buffer_size;
+    uint32_t piexl_size;
     uint32_t hor_res;
     uint32_t ver_res;
     uint32_t max_x;
     uint32_t max_y;
     uint32_t offset_x;
     uint32_t offset_y;
-    uint32_t max_fps;
     uint32_t fcount;
-    uint32_t ticks;
-    sgl_rect_t visible;
-    sgl_rect_t invalidate;
+    sgl_rect_t drawable;
+    sgl_rect_t dirty;
+    sgl_rect_t slice;
     sgl_rotate_t rotate;
-    void (*paint)(sgl_screen_t *scr);
-    void (*flush)(void *buffer, sgl_rect_t *visible);
+    void (*draw)(sgl_screen_t *scr);
+    void (*flush)(void *buffer, sgl_rect_t *refresh);
     void (*draw_pixel)(sgl_screen_t *scr, int32_t x, int32_t y, uint32_t color);
 };
 
@@ -97,15 +97,15 @@ int sgl_init(sgl_screen_t *scr, void *buffer, uint32_t buffer_size,
              uint32_t hor_res, uint32_t ver_res);
 void sgl_handler(sgl_screen_t *scr);
 void sgl_set_buffer(sgl_screen_t *scr, void *buffer, uint32_t buffer_size);
-void sgl_set_paint(sgl_screen_t *scr, void (*paint)(sgl_screen_t *scr));
+void sgl_set_draw(sgl_screen_t *scr, void (*draw)(sgl_screen_t *scr));
 void sgl_set_flush(sgl_screen_t *scr,
-                   void (*flush)(void *buffer, sgl_rect_t *visible));
+                   void (*flush)(void *buffer, sgl_rect_t *refresh));
 void sgl_set_draw_pixel(sgl_screen_t *scr,
                         void (*draw_pixel)(sgl_screen_t *scr, int32_t x,
                                            int32_t y, uint32_t color));
-void sgl_set_visible(sgl_screen_t *scr, int32_t left, int32_t top,
-                     int32_t right, int32_t bottom);
-void sgl_reset_visible(sgl_screen_t *scr);
+void sgl_set_drawable(sgl_screen_t *scr, int32_t left, int32_t top,
+                      int32_t right, int32_t bottom);
+void sgl_reset_drawable(sgl_screen_t *scr);
 void sgl_set_screen_rotation(sgl_screen_t *scr, sgl_rotate_t rotate);
 uint32_t sgl_get_fcount(sgl_screen_t *scr);
 void sgl_reset_fcount(sgl_screen_t *scr);

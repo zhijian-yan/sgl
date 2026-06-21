@@ -7,9 +7,9 @@
 
 void sgl_draw_rect(sgl_screen_t *scr, int32_t x, int32_t y, int32_t w,
                    int32_t h, int is_filled, uint32_t color) {
-    if (sgl_clip_line(&x, &w, scr->visible.left, scr->visible.right))
+    if (sgl_clip_line(&x, &w, scr->drawable.left, scr->drawable.right))
         return;
-    if (sgl_clip_line(&y, &h, scr->visible.top, scr->visible.bottom))
+    if (sgl_clip_line(&y, &h, scr->drawable.top, scr->drawable.bottom))
         return;
     sgl_rotate_rect_ccw(scr, &x, &y, &w, &h);
     x -= scr->offset_x;

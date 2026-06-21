@@ -160,8 +160,8 @@ static inline void sgl_draw_vpixel(sgl_screen_t *scr, int32_t x, int32_t y,
 
 static inline int sgl_check_rect(sgl_screen_t *scr, int32_t left, int32_t top,
                                  int32_t right, int32_t bottom) {
-    if (left > scr->visible.right || right < scr->visible.left ||
-        top > scr->visible.bottom || bottom < scr->visible.top)
+    if (left > scr->drawable.right || right < scr->drawable.left ||
+        top > scr->drawable.bottom || bottom < scr->drawable.top)
         return -1;
     return 0;
 }
