@@ -1,10 +1,10 @@
 // SPDX-License-Identifier: MIT
 // Copyright (c) 2025 Zhijian Yan
 
-#include "sgl_string.h"
-#include "sgl_bitmap.h"
-#include "sgl_builtin_font.h"
-#include "sgl_common.h"
+#include "../inc/sgl_string.h"
+#include "../inc/sgl_bitmap.h"
+#include "../inc/sgl_builtin_font.h"
+#include "../inc/sgl_common.h"
 #include <stdarg.h>
 #include <stdio.h>
 

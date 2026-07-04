@@ -1,9 +1,9 @@
 // SPDX-License-Identifier: MIT
 // Copyright (c) 2025 Zhijian Yan
 
-#include "sgl_bitmap.h"
-#include "sgl_common.h"
-#include "sgl_line.h"
+#include "../inc/sgl_bitmap.h"
+#include "../inc/sgl_common.h"
+#include "../inc/sgl_line.h"
 
 static inline void sgl_rotate_bitmap(sgl_screen_t *scr, int32_t *x, int32_t *y,
                                      int32_t *dx, int32_t *dy, int32_t w,

@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: MIT
 // Copyright (c) 2025 Zhijian Yan
 
-#include "sgl_color.h"
+#include "../inc/sgl_color.h"
 
 void sgl_color_hsv2rgb(uint16_t h, uint8_t s, uint8_t v, uint8_t *r, uint8_t *g,
                        uint8_t *b) {

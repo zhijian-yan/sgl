@@ -8,15 +8,15 @@
 extern "C" {
 #endif
 
-#include "sgl_bitmap.h"
-#include "sgl_circle.h"
-#include "sgl_color.h"
-#include "sgl_core.h"
-#include "sgl_line.h"
-#include "sgl_pixel.h"
-#include "sgl_polygon.h"
-#include "sgl_rect.h"
-#include "sgl_string.h"
+#include "inc/sgl_bitmap.h"
+#include "inc/sgl_circle.h"
+#include "inc/sgl_color.h"
+#include "inc/sgl_core.h"
+#include "inc/sgl_line.h"
+#include "inc/sgl_pixel.h"
+#include "inc/sgl_polygon.h"
+#include "inc/sgl_rect.h"
+#include "inc/sgl_string.h"
 
 #ifdef __cplusplus
 }

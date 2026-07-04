@@ -1,8 +1,8 @@
 // SPDX-License-Identifier: MIT
 // Copyright (c) 2025 Zhijian Yan
 
-#include "sgl_line.h"
-#include "sgl_common.h"
+#include "../inc/sgl_line.h"
+#include "../inc/sgl_common.h"
 
 void sgl_draw_point(sgl_screen_t *scr, int32_t x, int32_t y, uint32_t color) {
     if (sgl_check_rect(scr, x, y, x, y))

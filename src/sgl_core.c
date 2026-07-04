@@ -1,9 +1,9 @@
 // SPDX-License-Identifier: MIT
 // Copyright (c) 2025 Zhijian Yan
 
-#include "sgl_core.h"
-#include "sgl_common.h"
-#include "sgl_pixel.h"
+#include "../inc/sgl_core.h"
+#include "../inc/sgl_common.h"
+#include "../inc/sgl_pixel.h"
 #include <string.h>
 
 int sgl_init(sgl_screen_t *scr, void *buffer, uint32_t buffer_size,
@@ -58,10 +58,10 @@ static void sgl_rotate_drawable_rect(sgl_screen_t *scr) {
 }
 
 void sgl_handler(sgl_screen_t *scr) {
-    sgl_buffer_slice(scr);
-    sgl_rotate_drawable_rect(scr);
+    // sgl_buffer_slice(scr);
+    // sgl_rotate_drawable_rect(scr);
     scr->draw(scr);
-    scr->flush(scr->buffer, &scr->slice);
+    scr->flush(scr->buffer, &scr->drawable);
     ++scr->fcount;
 }
 
