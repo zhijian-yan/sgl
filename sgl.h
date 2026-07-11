@@ -13,7 +13,6 @@ extern "C" {
 #include "inc/sgl_color.h"
 #include "inc/sgl_core.h"
 #include "inc/sgl_line.h"
-#include "inc/sgl_pixel.h"
 #include "inc/sgl_polygon.h"
 #include "inc/sgl_rect.h"
 #include "inc/sgl_string.h"
