@@ -105,6 +105,7 @@ typedef struct sgl_screen sgl_screen_t;
 struct sgl_screen {
     void *buffer;
     uint32_t buffer_size;
+    uint32_t buffer_width;
     uint32_t pixel_num;
     uint32_t hor_res;
     uint32_t ver_res;

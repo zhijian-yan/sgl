@@ -48,6 +48,7 @@ static void sgl_buffer_slice(sgl_screen_t *scr) {
         h_cake -= scr->slice_count;
         if (h_piece > h_cake)
             h_piece = h_cake;
+        scr->buffer_width = w_piece;
         scr->slice_count += h_piece;
         sgl_set_rect(&scr->slice_rect, scr->offset_x, scr->offset_y, w_piece,
                      h_piece);
