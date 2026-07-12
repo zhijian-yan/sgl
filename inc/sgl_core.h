@@ -91,6 +91,13 @@ typedef struct {
     int32_t top;
     int32_t right;
     int32_t bottom;
+} sgl_area_t;
+
+typedef struct {
+    int32_t x;
+    int32_t y;
+    int32_t w;
+    int32_t h;
 } sgl_rect_t;
 
 typedef struct sgl_screen sgl_screen_t;
@@ -105,11 +112,11 @@ struct sgl_screen {
     uint32_t max_y;
     uint32_t offset_x;
     uint32_t offset_y;
-    sgl_rect_t drawable;
-    sgl_rect_t slice;
-    sgl_rect_t dirty;
-    uint32_t w_dirty;
-    uint32_t h_dirty;
+    sgl_area_t drawable_area;
+    sgl_area_t dirty_area;
+    sgl_area_t slice_area;
+    sgl_rect_t dirty_rect;
+    sgl_rect_t slice_rect;
     uint32_t slice_count;
     uint32_t frame_count;
     sgl_slice_status_t slice_status;
@@ -120,19 +127,19 @@ struct sgl_screen {
 };
 
 int sgl_init(sgl_screen_t *scr, void *buffer, uint32_t buffer_size,
-             sgl_color_format_t color_format, uint32_t hor_res,
-             uint32_t ver_res);
+             sgl_color_format_t color_format, sgl_rotate_t rotate,
+             uint32_t hor_res, uint32_t ver_res);
 void sgl_handler(sgl_screen_t *scr);
 void sgl_set_draw(sgl_screen_t *scr, void (*draw)(sgl_screen_t *scr));
 void sgl_set_flush(sgl_screen_t *scr,
                    void (*flush)(void *buffer, sgl_rect_t *refresh));
-int sgl_set_draw_pixel(sgl_screen_t *scr,
+int sgl_set_draw_pixel(sgl_screen_t *scr, uint32_t hor_res,
+                       uint32_t buffer_size, uint32_t pixel_size,
                        void (*draw_pixel)(sgl_screen_t *scr, int32_t x,
-                                          int32_t y, uint32_t color),
-                       uint32_t buffer_size, uint32_t pixel_size);
-void sgl_set_drawable(sgl_screen_t *scr, int32_t left, int32_t top,
-                      int32_t right, int32_t bottom);
-void sgl_reset_drawable(sgl_screen_t *scr);
+                                          int32_t y, uint32_t color));
+void sgl_set_drawable_area(sgl_screen_t *scr, int32_t left, int32_t top,
+                           int32_t right, int32_t bottom);
+void sgl_reset_drawable_area(sgl_screen_t *scr);
 void sgl_set_screen_rotation(sgl_screen_t *scr, sgl_rotate_t rotate);
 uint32_t sgl_get_frame_count(sgl_screen_t *scr);
 void sgl_reset_frame_count(sgl_screen_t *scr);

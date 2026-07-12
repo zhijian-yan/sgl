@@ -7,21 +7,15 @@
 
 void sgl_draw_rect(sgl_screen_t *scr, int32_t x, int32_t y, int32_t w,
                    int32_t h, int is_filled, uint32_t color) {
-    if (sgl_clip_line(&x, &w, scr->drawable.left, scr->drawable.right))
+    if (sgl_clip_line(&x, &w, scr->drawable_area.left,
+                      scr->drawable_area.right))
         return;
-    if (sgl_clip_line(&y, &h, scr->drawable.top, scr->drawable.bottom))
+    if (sgl_clip_line(&y, &h, scr->drawable_area.top,
+                      scr->drawable_area.bottom))
         return;
     sgl_rotate_rect_ccw(scr, &x, &y, &w, &h);
     x -= scr->offset_x;
     y -= scr->offset_y;
-    if (w < 0) {
-        x += w + 1;
-        w = -w;
-    }
-    if (h < 0) {
-        y += h + 1;
-        h = -h;
-    }
     if (w > h) {
         if (is_filled == 0 && h > 1) {
             sgl_draw_hpixel(scr, x, y, w, color);

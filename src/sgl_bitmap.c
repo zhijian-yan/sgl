@@ -60,14 +60,18 @@ void sgl_show_mono_bitmap(sgl_screen_t *scr, int32_t x, int32_t y, int32_t w,
     int32_t dx = x, dy = y, temp;
     uint32_t bmp_w = w, bmp_h = h, bmp_x, bmp_y, mask, index, i, j;
     if (dir == SGL_DIR_UP || dir == SGL_DIR_DOWN) {
-        if (sgl_clip_line(&x, &w, scr->drawable.left, scr->drawable.right))
+        if (sgl_clip_line(&x, &w, scr->drawable_area.left,
+                          scr->drawable_area.right))
             return;
-        if (sgl_clip_line(&y, &h, scr->drawable.top, scr->drawable.bottom))
+        if (sgl_clip_line(&y, &h, scr->drawable_area.top,
+                          scr->drawable_area.bottom))
             return;
     } else {
-        if (sgl_clip_line(&x, &h, scr->drawable.left, scr->drawable.right))
+        if (sgl_clip_line(&x, &h, scr->drawable_area.left,
+                          scr->drawable_area.right))
             return;
-        if (sgl_clip_line(&y, &w, scr->drawable.top, scr->drawable.bottom))
+        if (sgl_clip_line(&y, &w, scr->drawable_area.top,
+                          scr->drawable_area.bottom))
             return;
     }
     dx = x - dx;
@@ -136,14 +140,18 @@ void sgl_show_rgb565_bitmap(sgl_screen_t *scr, int32_t x, int32_t y, int32_t w,
     int32_t dx = x, dy = y, temp;
     uint32_t bmp_w = w, bmp_h = h, bmp_x, bmp_y, index, i, j;
     if (dir == SGL_DIR_UP || dir == SGL_DIR_DOWN) {
-        if (sgl_clip_line(&x, &w, scr->drawable.left, scr->drawable.right))
+        if (sgl_clip_line(&x, &w, scr->drawable_area.left,
+                          scr->drawable_area.right))
             return;
-        if (sgl_clip_line(&y, &h, scr->drawable.top, scr->drawable.bottom))
+        if (sgl_clip_line(&y, &h, scr->drawable_area.top,
+                          scr->drawable_area.bottom))
             return;
     } else {
-        if (sgl_clip_line(&x, &h, scr->drawable.left, scr->drawable.right))
+        if (sgl_clip_line(&x, &h, scr->drawable_area.left,
+                          scr->drawable_area.right))
             return;
-        if (sgl_clip_line(&y, &w, scr->drawable.top, scr->drawable.bottom))
+        if (sgl_clip_line(&y, &w, scr->drawable_area.top,
+                          scr->drawable_area.bottom))
             return;
     }
     dx = x - dx;

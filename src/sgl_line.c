@@ -5,7 +5,7 @@
 #include "../inc/sgl_common.h"
 
 void sgl_draw_point(sgl_screen_t *scr, int32_t x, int32_t y, uint32_t color) {
-    if (sgl_check_rect(scr, x, y, x, y))
+    if (sgl_check_area(scr, x, y, x, y))
         return;
     sgl_rotate_point_ccw(scr, &x, &y);
     x -= scr->offset_x;
@@ -15,9 +15,10 @@ void sgl_draw_point(sgl_screen_t *scr, int32_t x, int32_t y, uint32_t color) {
 
 void sgl_draw_hline(sgl_screen_t *scr, int32_t x, int32_t y, int32_t len,
                     uint32_t color) {
-    if (y < scr->drawable.top || y > scr->drawable.bottom)
+    if (y < scr->drawable_area.top || y > scr->drawable_area.bottom)
         return;
-    if (sgl_clip_line(&x, &len, scr->drawable.left, scr->drawable.right))
+    if (sgl_clip_line(&x, &len, scr->drawable_area.left,
+                      scr->drawable_area.right))
         return;
     sgl_rotate_point_ccw(scr, &x, &y);
     x -= scr->offset_x;
@@ -40,9 +41,10 @@ void sgl_draw_hline(sgl_screen_t *scr, int32_t x, int32_t y, int32_t len,
 
 void sgl_draw_vline(sgl_screen_t *scr, int32_t x, int32_t y, int32_t len,
                     uint32_t color) {
-    if (x < scr->drawable.left || x > scr->drawable.right)
+    if (x < scr->drawable_area.left || x > scr->drawable_area.right)
         return;
-    if (sgl_clip_line(&y, &len, scr->drawable.top, scr->drawable.bottom))
+    if (sgl_clip_line(&y, &len, scr->drawable_area.top,
+                      scr->drawable_area.bottom))
         return;
     sgl_rotate_point_ccw(scr, &x, &y);
     x -= scr->offset_x;

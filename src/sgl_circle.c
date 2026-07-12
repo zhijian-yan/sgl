@@ -124,7 +124,7 @@ void sgl_draw_circle(sgl_screen_t *scr, int32_t x, int32_t y, int32_t d,
     int32_t r;
     if (d < 0)
         d = -d;
-    if (sgl_check_rect(scr, x, y, x + d, y + d))
+    if (sgl_check_area(scr, x, y, x + d, y + d))
         return;
     if (d == 2) {
         sgl_draw_hline(scr, x, y, 2, color);
@@ -142,7 +142,7 @@ void sgl_draw_circle_center(sgl_screen_t *scr, int32_t xc, int32_t yc,
                             int32_t r, int32_t is_filled, uint32_t color) {
     if (r < 0)
         r = -r;
-    if (sgl_check_rect(scr, xc - r, yc - r, xc + r, yc + r))
+    if (sgl_check_area(scr, xc - r, yc - r, xc + r, yc + r))
         return;
     __sgl_draw_circle(scr, xc, yc, r, 0, is_filled, color);
 }
@@ -258,7 +258,7 @@ void sgl_draw_ellipse(sgl_screen_t *scr, int32_t xc, int32_t yc, int32_t rx,
         rx = -rx;
     if (ry < 0)
         ry = -ry;
-    if (sgl_check_rect(scr, xc - rx, yc - ry, xc + rx, yc + ry))
+    if (sgl_check_area(scr, xc - rx, yc - ry, xc + rx, yc + ry))
         return;
     if (is_filled == 0 && rx > 0 && ry > 0) {
         sgl_draw_point(scr, xc + rx, yc, color); // 1, 2

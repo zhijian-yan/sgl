@@ -78,6 +78,14 @@ static inline void sgl_rotate_rect_ccw(sgl_screen_t *scr, int32_t *x,
         *h = -temp2;
         break;
     }
+    if (*w < 0) {
+        *x += *w + 1;
+        *w = -*w;
+    }
+    if (*h < 0) {
+        *y += *h + 1;
+        *h = -*h;
+    }
 }
 
 static inline void sgl_rotate_rect_cw(sgl_screen_t *scr, int32_t *x, int32_t *y,
@@ -106,6 +114,34 @@ static inline void sgl_rotate_rect_cw(sgl_screen_t *scr, int32_t *x, int32_t *y,
         *h = temp2;
         break;
     }
+    if (*w < 0) {
+        *x += *w + 1;
+        *w = -*w;
+    }
+    if (*h < 0) {
+        *y += *h + 1;
+        *h = -*h;
+    }
+}
+
+static inline void sgl_area2rect(const sgl_area_t *area, sgl_rect_t *rect) {
+    rect->x = area->left;
+    rect->y = area->top;
+    rect->w = area->right - area->left + 1;
+    rect->h = area->bottom - area->top + 1;
+}
+
+static inline void sgl_rect2area(const sgl_rect_t *rect, sgl_area_t *area) {
+    area->left = rect->x;
+    area->top = rect->y;
+    if (rect->w > 0)
+        area->right = rect->x + rect->w - 1;
+    else
+        area->right = rect->x - rect->w - 1;
+    if (rect->h > 0)
+        area->bottom = rect->y + rect->h - 1;
+    else
+        area->bottom = rect->y - rect->h - 1;
 }
 
 static inline void sgl_align(int32_t *x, int32_t *y, int32_t w, int32_t h,
@@ -158,20 +194,28 @@ static inline void sgl_draw_vpixel(sgl_screen_t *scr, int32_t x, int32_t y,
         scr->draw_pixel(scr, x, y, color);
 }
 
-static inline int sgl_check_rect(sgl_screen_t *scr, int32_t left, int32_t top,
+static inline int sgl_check_area(sgl_screen_t *scr, int32_t left, int32_t top,
                                  int32_t right, int32_t bottom) {
-    if (left > scr->drawable.right || right < scr->drawable.left ||
-        top > scr->drawable.bottom || bottom < scr->drawable.top)
+    if (left > scr->drawable_area.right || right < scr->drawable_area.left ||
+        top > scr->drawable_area.bottom || bottom < scr->drawable_area.top)
         return -1;
     return 0;
 }
 
-static inline void sgl_set_rect(sgl_rect_t *rect, int32_t left, int32_t top,
+static inline void sgl_set_area(sgl_area_t *area, int32_t left, int32_t top,
                                 int32_t right, int32_t bottom) {
-    rect->left = left;
-    rect->top = top;
-    rect->right = right;
-    rect->bottom = bottom;
+    area->left = left;
+    area->top = top;
+    area->right = right;
+    area->bottom = bottom;
+}
+
+static inline void sgl_set_rect(sgl_rect_t *rect, int32_t x, int32_t y,
+                                int32_t w, int32_t h) {
+    rect->x = x;
+    rect->y = y;
+    rect->w = w;
+    rect->h = h;
 }
 
 static inline int sgl_clip_line(int32_t *start, int32_t *len, int32_t min,
