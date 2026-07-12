@@ -18,27 +18,27 @@ int sgl_init(sgl_screen_t *scr, void *buffer, uint32_t buffer_size,
     scr->buffer = buffer;
     scr->hor_res = hor_res;
     scr->ver_res = ver_res;
-    if (sgl_set_color_format(scr, buffer_size, color_format) != 0)
+    if (sgl_set_color_format(scr, buffer_size, color_format))
         return -1;
     sgl_set_screen_rotation(scr, rotate);
-    scr->dirty_area = scr->drawable_area;
+    sgl_reset_dirty_area(scr);
     return 0;
 }
 
 static void sgl_buffer_slice(sgl_screen_t *scr) {
     uint32_t w_cake, h_cake, w_piece, h_piece;
     sgl_rect_t temp;
-    if (scr->slice_status == SGL_SLICE_STATUS_IDLE) {
-        scr->slice_status = SGL_SLICE_STATUS_START;
+    if (scr->slice_state == SGL_SLICE_STATE_IDLE) {
+        scr->slice_state = SGL_SLICE_STATE_START;
     }
-    if (scr->slice_status == SGL_SLICE_STATUS_START) {
-        scr->slice_status = SGL_SLICE_STATUS_RUNNIG;
+    if (scr->slice_state == SGL_SLICE_STATE_START) {
+        scr->slice_state = SGL_SLICE_STATE_RUNNIG;
         scr->slice_count = 0;
         sgl_area2rect(&scr->dirty_area, &scr->dirty_rect);
         sgl_rotate_rect_ccw(scr, &scr->dirty_rect.x, &scr->dirty_rect.y,
                             &scr->dirty_rect.w, &scr->dirty_rect.h);
     }
-    if (scr->slice_status == SGL_SLICE_STATUS_RUNNIG) {
+    if (scr->slice_state == SGL_SLICE_STATE_RUNNIG) {
         scr->offset_x = scr->dirty_rect.x;
         scr->offset_y = scr->dirty_rect.y + scr->slice_count;
         w_cake = scr->dirty_rect.w;
@@ -54,9 +54,9 @@ static void sgl_buffer_slice(sgl_screen_t *scr) {
         temp = scr->slice_rect;
         sgl_rotate_rect_cw(scr, &temp.x, &temp.y, &temp.w, &temp.h);
         sgl_rect2area(&temp, &scr->slice_area);
-        scr->drawable_area = scr->slice_area;
+        sgl_reset_drawable_area(scr);
         if (scr->slice_count == scr->dirty_rect.h)
-            scr->slice_status = SGL_SLICE_STATUS_IDLE;
+            scr->slice_state = SGL_SLICE_STATE_IDLE;
     }
 }
 
@@ -64,7 +64,7 @@ void sgl_handler(sgl_screen_t *scr) {
     sgl_buffer_slice(scr);
     scr->draw(scr);
     scr->flush(scr->buffer, &scr->slice_rect);
-    if (scr->slice_status == SGL_SLICE_STATUS_IDLE)
+    if (scr->slice_state == SGL_SLICE_STATE_IDLE)
         ++scr->frame_count;
 }
 
@@ -153,17 +153,20 @@ static int sgl_set_color_format(sgl_screen_t *scr, uint32_t buffer_size,
     return ret;
 }
 
+void sgl_set_dirty_area(sgl_screen_t *scr, int32_t left, int32_t top,
+                        int32_t right, int32_t bottom) {
+    sgl_set_area_within(&scr->dirty_area, &scr->screen_area, left, top, right,
+                        bottom);
+}
+
 void sgl_set_drawable_area(sgl_screen_t *scr, int32_t left, int32_t top,
                            int32_t right, int32_t bottom) {
-    if (left < scr->slice_area.left)
-        left = scr->slice_area.left;
-    if (top < scr->slice_area.top)
-        top = scr->slice_area.top;
-    if (right > scr->slice_area.right)
-        right = scr->slice_area.right;
-    if (bottom > scr->slice_area.bottom)
-        bottom = scr->slice_area.bottom;
-    sgl_set_area(&scr->drawable_area, left, top, right, bottom);
+    sgl_set_area_within(&scr->drawable_area, &scr->slice_area, left, top, right,
+                        bottom);
+}
+
+void sgl_reset_dirty_area(sgl_screen_t *scr) {
+    scr->dirty_area = scr->screen_area;
 }
 
 void sgl_reset_drawable_area(sgl_screen_t *scr) {
@@ -184,7 +187,7 @@ void sgl_set_screen_rotation(sgl_screen_t *scr, sgl_rotate_t rotate) {
         scr->max_y = scr->hor_res - 1;
         break;
     }
-    sgl_set_area(&scr->drawable_area, 0, 0, scr->max_x, scr->max_y);
+    sgl_set_area(&scr->screen_area, 0, 0, scr->max_x, scr->max_y);
 }
 
 uint32_t sgl_get_frame_count(sgl_screen_t *scr) { return scr->frame_count; }

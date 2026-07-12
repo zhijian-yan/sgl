@@ -65,10 +65,10 @@ typedef enum {
 #define SGL_ROTATE_DEFAULT SGL_ROTATE_0
 
 typedef enum {
-    SGL_SLICE_STATUS_IDLE,
-    SGL_SLICE_STATUS_START,
-    SGL_SLICE_STATUS_RUNNIG,
-} sgl_slice_status_t;
+    SGL_SLICE_STATE_IDLE,
+    SGL_SLICE_STATE_START,
+    SGL_SLICE_STATE_RUNNIG,
+} sgl_slice_state_t;
 
 typedef enum {
     SGL_COLOR_FORMAT_MONO,
@@ -112,6 +112,7 @@ struct sgl_screen {
     uint32_t max_y;
     uint32_t offset_x;
     uint32_t offset_y;
+    sgl_area_t screen_area;
     sgl_area_t drawable_area;
     sgl_area_t dirty_area;
     sgl_area_t slice_area;
@@ -119,7 +120,7 @@ struct sgl_screen {
     sgl_rect_t slice_rect;
     uint32_t slice_count;
     uint32_t frame_count;
-    sgl_slice_status_t slice_status;
+    sgl_slice_state_t slice_state;
     sgl_rotate_t rotate;
     void (*draw)(sgl_screen_t *scr);
     void (*flush)(void *buffer, sgl_rect_t *refresh);
@@ -137,8 +138,11 @@ int sgl_set_draw_pixel(sgl_screen_t *scr, uint32_t hor_res,
                        uint32_t buffer_size, uint32_t pixel_size,
                        void (*draw_pixel)(sgl_screen_t *scr, int32_t x,
                                           int32_t y, uint32_t color));
+void sgl_set_dirty_area(sgl_screen_t *scr, int32_t left, int32_t top,
+                        int32_t right, int32_t bottom);
 void sgl_set_drawable_area(sgl_screen_t *scr, int32_t left, int32_t top,
                            int32_t right, int32_t bottom);
+void sgl_reset_dirty_area(sgl_screen_t *scr);
 void sgl_reset_drawable_area(sgl_screen_t *scr);
 void sgl_set_screen_rotation(sgl_screen_t *scr, sgl_rotate_t rotate);
 uint32_t sgl_get_frame_count(sgl_screen_t *scr);

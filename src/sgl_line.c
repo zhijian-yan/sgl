@@ -5,7 +5,7 @@
 #include "../inc/sgl_common.h"
 
 void sgl_draw_point(sgl_screen_t *scr, int32_t x, int32_t y, uint32_t color) {
-    if (sgl_check_area(scr, x, y, x, y))
+    if (sgl_check_area(&scr->drawable_area, x, y, x, y))
         return;
     sgl_rotate_point_ccw(scr, &x, &y);
     x -= scr->offset_x;
