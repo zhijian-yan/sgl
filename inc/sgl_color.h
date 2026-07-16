@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-// Copyright (c) 2025 Zhijian Yan
+// Copyright (c) 2025-2026 Zhijian Yan
 
 #ifndef __SGL_COLOR_H
 #define __SGL_COLOR_H
@@ -8,7 +8,7 @@
 extern "C" {
 #endif
 
-#include "sgl_core.h"
+#include "sgl_types.h"
 
 #define SGL_COLOR_GET_A(color) ((uint8_t)((color) >> 24))
 #define SGL_COLOR_GET_R(color) ((uint8_t)((color) >> 16))

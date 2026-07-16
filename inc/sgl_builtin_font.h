@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-// Copyright (c) 2025 Zhijian Yan
+// Copyright (c) 2025-2026 Zhijian Yan
 
 #ifndef __SGL_BUILTIN_FONT_H
 #define __SGL_BUILTIN_FONT_H

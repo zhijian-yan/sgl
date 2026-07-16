@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-// Copyright (c) 2025 Zhijian Yan
+// Copyright (c) 2025-2026 Zhijian Yan
 
 #ifndef __SGL_H
 #define __SGL_H
@@ -16,6 +16,7 @@ extern "C" {
 #include "inc/sgl_polygon.h"
 #include "inc/sgl_rect.h"
 #include "inc/sgl_string.h"
+#include "inc/sgl_widget.h"
 
 #ifdef __cplusplus
 }

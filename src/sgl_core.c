@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-// Copyright (c) 2025 Zhijian Yan
+// Copyright (c) 2025-2026 Zhijian Yan
 
 #include "../inc/sgl_core.h"
 #include "../inc/sgl_common.h"
@@ -20,6 +20,8 @@ int sgl_init(sgl_screen_t *scr, void *buffer, uint32_t buffer_size,
     scr->ver_res = ver_res;
     if (sgl_set_color_format(scr, buffer_size, color_format))
         return -1;
+    INIT_LIST_HEAD(&scr->root_widget.sibling);
+    INIT_LIST_HEAD(&scr->root_widget.children);
     sgl_set_screen_rotation(scr, rotate);
     sgl_reset_dirty_area(scr);
     return 0;
@@ -61,16 +63,21 @@ static void sgl_buffer_slice(sgl_screen_t *scr) {
     }
 }
 
+static void sgl_draw(sgl_screen_t *scr, sgl_widget_t *widget) {
+    sgl_widget_t *child;
+    if (widget->draw)
+        widget->draw(scr, widget->user_data);
+    list_for_each_entry(child, &widget->children, sibling) {
+        sgl_draw(scr, child);
+    }
+}
+
 void sgl_handler(sgl_screen_t *scr) {
     sgl_buffer_slice(scr);
-    scr->draw(scr);
+    sgl_draw(scr, &scr->root_widget);
     scr->flush(scr->buffer, &scr->slice_rect);
     if (scr->slice_state == SGL_SLICE_STATE_IDLE)
         ++scr->frame_count;
-}
-
-void sgl_set_draw(sgl_screen_t *scr, void (*draw)(sgl_screen_t *scr)) {
-    scr->draw = draw;
 }
 
 void sgl_set_flush(sgl_screen_t *scr,
@@ -156,8 +163,8 @@ static int sgl_set_color_format(sgl_screen_t *scr, uint32_t buffer_size,
 
 void sgl_set_dirty_area(sgl_screen_t *scr, int32_t left, int32_t top,
                         int32_t right, int32_t bottom) {
-    sgl_set_area_within(&scr->dirty_area, &scr->screen_area, left, top, right,
-                        bottom);
+    sgl_set_area_within(&scr->dirty_area, &scr->root_widget.area, left, top,
+                        right, bottom);
 }
 
 void sgl_set_drawable_area(sgl_screen_t *scr, int32_t left, int32_t top,
@@ -167,7 +174,7 @@ void sgl_set_drawable_area(sgl_screen_t *scr, int32_t left, int32_t top,
 }
 
 void sgl_reset_dirty_area(sgl_screen_t *scr) {
-    scr->dirty_area = scr->screen_area;
+    scr->dirty_area = scr->root_widget.area;
 }
 
 void sgl_reset_drawable_area(sgl_screen_t *scr) {
@@ -188,7 +195,7 @@ void sgl_set_screen_rotation(sgl_screen_t *scr, sgl_rotate_t rotate) {
         scr->max_y = scr->hor_res - 1;
         break;
     }
-    sgl_set_area(&scr->screen_area, 0, 0, scr->max_x, scr->max_y);
+    sgl_set_area(&scr->root_widget.area, 0, 0, scr->max_x, scr->max_y);
 }
 
 uint32_t sgl_get_frame_count(sgl_screen_t *scr) { return scr->frame_count; }

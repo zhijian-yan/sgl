@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-// Copyright (c) 2025 Zhijian Yan
+// Copyright (c) 2025-2026 Zhijian Yan
 
 #ifndef __SGL_STRING_H
 #define __SGL_STRING_H
@@ -8,7 +8,9 @@
 extern "C" {
 #endif
 
-#include "sgl_core.h"
+#include "sgl_types.h"
+
+#define SGL_FORMAT_STRING_BUFFERSIZE (128)
 
 void sgl_show_string(sgl_screen_t *scr, int32_t x, int32_t y, const char *str,
                      int32_t length, sgl_align_t align, sgl_dir_t dir,

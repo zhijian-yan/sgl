@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-// Copyright (c) 2025 Zhijian Yan
+// Copyright (c) 2025-2026 Zhijian Yan
 
 #ifndef __SGL_COMMON_H
 #define __SGL_COMMON_H
@@ -8,7 +8,7 @@
 extern "C" {
 #endif
 
-#include "sgl_core.h"
+#include "sgl_types.h"
 
 static inline void sgl_set_rect(sgl_rect_t *rect, int32_t x, int32_t y,
                                 int32_t w, int32_t h) {

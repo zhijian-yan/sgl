@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-// Copyright (c) 2025 Zhijian Yan
+// Copyright (c) 2025-2026 Zhijian Yan
 
 #ifndef __SGL_LINE_H
 #define __SGL_LINE_H
@@ -8,7 +8,7 @@
 extern "C" {
 #endif
 
-#include "sgl_core.h"
+#include "sgl_types.h"
 
 void sgl_draw_point(sgl_screen_t *scr, int32_t x, int32_t y, uint32_t color);
 void sgl_draw_hline(sgl_screen_t *scr, int32_t x, int32_t y, int32_t len,
