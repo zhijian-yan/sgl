@@ -5,24 +5,28 @@
 #include "../inc/sgl_common.h"
 
 void sgl_draw_point(sgl_screen_t *scr, int32_t x, int32_t y, uint32_t color) {
+    x += scr->offset_x;
+    y += scr->offset_y;
     if (sgl_check_area(&scr->drawable_area, x, y, x, y))
         return;
     sgl_rotate_point_ccw(scr, &x, &y);
-    x -= scr->offset_x;
-    y -= scr->offset_y;
+    x -= scr->buf_offset_x;
+    y -= scr->buf_offset_y;
     scr->draw_pixel(scr, x, y, color);
 }
 
 void sgl_draw_hline(sgl_screen_t *scr, int32_t x, int32_t y, int32_t len,
                     uint32_t color) {
+    x += scr->offset_x;
+    y += scr->offset_y;
     if (y < scr->drawable_area.top || y > scr->drawable_area.bottom)
         return;
     if (sgl_clip_line(&x, &len, scr->drawable_area.left,
                       scr->drawable_area.right))
         return;
     sgl_rotate_point_ccw(scr, &x, &y);
-    x -= scr->offset_x;
-    y -= scr->offset_y;
+    x -= scr->buf_offset_x;
+    y -= scr->buf_offset_y;
     switch (scr->rotate) {
     case SGL_ROTATE_0:
         sgl_draw_hpixel(scr, x, y, len, color);
@@ -41,14 +45,16 @@ void sgl_draw_hline(sgl_screen_t *scr, int32_t x, int32_t y, int32_t len,
 
 void sgl_draw_vline(sgl_screen_t *scr, int32_t x, int32_t y, int32_t len,
                     uint32_t color) {
+    x += scr->offset_x;
+    y += scr->offset_y;
     if (x < scr->drawable_area.left || x > scr->drawable_area.right)
         return;
     if (sgl_clip_line(&y, &len, scr->drawable_area.top,
                       scr->drawable_area.bottom))
         return;
     sgl_rotate_point_ccw(scr, &x, &y);
-    x -= scr->offset_x;
-    y -= scr->offset_y;
+    x -= scr->buf_offset_x;
+    y -= scr->buf_offset_y;
     switch (scr->rotate) {
     case SGL_ROTATE_0:
         sgl_draw_vpixel(scr, x, y, len, color);
@@ -67,13 +73,17 @@ void sgl_draw_vline(sgl_screen_t *scr, int32_t x, int32_t y, int32_t len,
 
 void sgl_draw_line(sgl_screen_t *scr, int32_t x0, int32_t y0, int32_t x1,
                    int32_t y1, uint32_t color) {
+    x0 += scr->offset_x;
+    y0 += scr->offset_y;
+    x1 += scr->offset_x;
+    y1 += scr->offset_y;
     int32_t dx, dy, sx, sy, err;
     sgl_rotate_point_ccw(scr, &x0, &y0);
     sgl_rotate_point_ccw(scr, &x1, &y1);
-    x0 -= scr->offset_x;
-    y0 -= scr->offset_y;
-    x1 -= scr->offset_x;
-    y1 -= scr->offset_y;
+    x0 -= scr->buf_offset_x;
+    y0 -= scr->buf_offset_y;
+    x1 -= scr->buf_offset_x;
+    y1 -= scr->buf_offset_y;
     dx = x1 - x0;
     dy = y1 - y0;
     sx = 1, sy = 1;

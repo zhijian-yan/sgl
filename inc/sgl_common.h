@@ -58,6 +58,10 @@ static inline void sgl_set_area_within(sgl_area_t *area,
         right = within->right;
     if (bottom > within->bottom)
         bottom = within->bottom;
+    if (left > right)
+        left = right;
+    if (top > bottom)
+        top = bottom;
     sgl_set_area(area, left, top, right, bottom);
 }
 

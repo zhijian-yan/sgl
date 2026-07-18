@@ -29,7 +29,7 @@ void sgl_reset_drawable_area(sgl_screen_t *scr);
 void sgl_set_screen_rotation(sgl_screen_t *scr, sgl_rotate_t rotate);
 uint32_t sgl_get_frame_count(sgl_screen_t *scr);
 void sgl_reset_frame_count(sgl_screen_t *scr);
-void sgl_clear_screen(sgl_screen_t *scr, uint8_t value);
+void sgl_clear_buffer(sgl_screen_t *scr, uint8_t value);
 
 #ifdef __cplusplus
 }

@@ -103,13 +103,16 @@ typedef struct sgl_screen sgl_screen_t;
 
 typedef struct sgl_widget sgl_widget_t;
 
+typedef void (*sgl_widget_draw_t)(sgl_screen_t *scr, sgl_widget_t *widget);
+
 struct sgl_widget {
     sgl_widget_t *parent;
     struct list_head sibling;
     struct list_head children;
-    sgl_area_t area;
+    sgl_rect_t rect;
+    uint16_t flags;
+    uint16_t draw_index;
     void *user_data;
-    void (*draw)(sgl_screen_t *scr, void *user_data);
 };
 
 struct sgl_screen {
@@ -121,9 +124,12 @@ struct sgl_screen {
     uint32_t ver_res;
     uint32_t max_x;
     uint32_t max_y;
-    uint32_t offset_x;
-    uint32_t offset_y;
+    uint32_t buf_offset_x;
+    uint32_t buf_offset_y;
+    int32_t offset_x;
+    int32_t offset_y;
     sgl_area_t drawable_area;
+    sgl_area_t widget_bounds;
     sgl_area_t dirty_area;
     sgl_area_t slice_area;
     sgl_rect_t dirty_rect;
