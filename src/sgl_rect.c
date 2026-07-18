@@ -7,37 +7,30 @@
 
 void sgl_draw_rect(sgl_screen_t *scr, int32_t x, int32_t y, int32_t w,
                    int32_t h, int is_filled, uint32_t color) {
-    if (sgl_clip_line(&x, &w, scr->drawable_area.left,
-                      scr->drawable_area.right))
-        return;
-    if (sgl_clip_line(&y, &h, scr->drawable_area.top,
-                      scr->drawable_area.bottom))
-        return;
-    sgl_rotate_rect_ccw(scr, &x, &y, &w, &h);
-    x -= scr->offset_x;
-    y -= scr->offset_y;
-    if (w > h) {
-        if (is_filled == 0 && h > 1) {
-            sgl_draw_hpixel(scr, x, y, w, color);
-            sgl_draw_hpixel(scr, x, y + h - 1, w, color);
-            sgl_draw_vpixel(scr, x, y + 1, h - 2, color);
-            sgl_draw_vpixel(scr, x + w - 1, y + 1, h - 2, color);
-        } else {
+    if (is_filled == 1 || (h > -2 && h < 2) || (w > -2 && w < 2)) {
+        if (sgl_clip_line(&x, &w, scr->drawable_area.left,
+                          scr->drawable_area.right))
+            return;
+        if (sgl_clip_line(&y, &h, scr->drawable_area.top,
+                          scr->drawable_area.bottom))
+            return;
+        sgl_rotate_rect_ccw(scr, &x, &y, &w, &h);
+        x -= scr->offset_x;
+        y -= scr->offset_y;
+        if (w > h) {
             for (h += y; y < h; ++y) {
                 sgl_draw_hpixel(scr, x, y, w, color);
             }
-        }
-    } else {
-        if (is_filled == 0 && w > 1) {
-            sgl_draw_vpixel(scr, x, y, h, color);
-            sgl_draw_vpixel(scr, x + w - 1, y, h, color);
-            sgl_draw_hpixel(scr, x + 1, y, w - 2, color);
-            sgl_draw_hpixel(scr, x + 1, y + h - 1, w - 2, color);
         } else {
             for (w += x; x < w; ++x) {
                 sgl_draw_vpixel(scr, x, y, h, color);
             }
         }
+    } else {
+        sgl_draw_hline(scr, x, y, w - 1, color);
+        sgl_draw_vline(scr, x, y + 1, h - 1, color);
+        sgl_draw_vline(scr, x + w - 1, y, h - 1, color);
+        sgl_draw_hline(scr, x + 1, y + h - 1, w - 1, color);
     }
 }
 
