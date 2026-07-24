@@ -41,8 +41,8 @@ static void sgl_buffer_slice(sgl_screen_t *scr) {
         sgl_rotate_rect_ccw(scr, &temp.x, &temp.y, &temp.w, &temp.h);
     }
     if (scr->slice_state == SGL_SLICE_STATE_RUNNIG) {
-        scr->buf_offset_x = scr->dirty_rect.x;
-        scr->buf_offset_y = scr->dirty_rect.y + scr->slice_count;
+        scr->buffer_offset_x = scr->dirty_rect.x;
+        scr->buffer_offset_y = scr->dirty_rect.y + scr->slice_count;
         w_cake = scr->dirty_rect.w;
         h_cake = scr->dirty_rect.h;
         w_piece = w_cake;
@@ -52,8 +52,8 @@ static void sgl_buffer_slice(sgl_screen_t *scr) {
             h_piece = h_cake;
         scr->buffer_width = w_piece;
         scr->slice_count += h_piece;
-        sgl_set_rect(&scr->slice_rect, scr->buf_offset_x, scr->buf_offset_y,
-                     w_piece, h_piece);
+        sgl_set_rect(&scr->slice_rect, scr->buffer_offset_x,
+                     scr->buffer_offset_y, w_piece, h_piece);
         temp = scr->slice_rect;
         sgl_rotate_rect_cw(scr, &temp.x, &temp.y, &temp.w, &temp.h);
         sgl_rect2area(&temp, &scr->slice_area);
@@ -67,8 +67,8 @@ static void sgl_draw(sgl_screen_t *scr, sgl_widget_t *widget, int32_t offset_x,
     sgl_widget_t *child;
     sgl_widget_draw_t draw;
     sgl_area_t bounds;
-    scr->offset_x = offset_x;
-    scr->offset_y = offset_y;
+    scr->logical_offset_x = offset_x;
+    scr->logical_offset_y = offset_y;
     sgl_set_area_within(&bounds, parent_bounds, offset_x, offset_y,
                         offset_x + widget->rect.w - 1,
                         offset_y + widget->rect.h - 1);

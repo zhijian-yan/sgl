@@ -124,10 +124,10 @@ struct sgl_screen {
     uint32_t ver_res;
     uint32_t max_x;
     uint32_t max_y;
-    uint32_t buf_offset_x;
-    uint32_t buf_offset_y;
-    int32_t offset_x;
-    int32_t offset_y;
+    uint32_t buffer_offset_x;
+    uint32_t buffer_offset_y;
+    int32_t logical_offset_x;
+    int32_t logical_offset_y;
     sgl_area_t drawable_area;
     sgl_area_t widget_bounds;
     sgl_area_t dirty_area;

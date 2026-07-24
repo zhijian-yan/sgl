@@ -59,8 +59,7 @@ void sgl_show_mono_bitmap(sgl_screen_t *scr, int32_t x, int32_t y, int32_t w,
                           uint32_t color) {
     int32_t dx, dy, temp;
     uint32_t bmp_w = w, bmp_h = h, bmp_x, bmp_y, mask, index, i, j;
-    x += scr->offset_x;
-    y += scr->offset_y;
+    SGL_LOGICAL_OFFSET(x, y);
     dx = x;
     dy = y;
     if (dir == SGL_DIR_UP || dir == SGL_DIR_DOWN) {
@@ -81,8 +80,7 @@ void sgl_show_mono_bitmap(sgl_screen_t *scr, int32_t x, int32_t y, int32_t w,
     dx = x - dx;
     dy = y - dy;
     sgl_rotate_bitmap(scr, &x, &y, &dx, &dy, w, h, bmp_w, bmp_h, &dir);
-    x -= scr->buf_offset_x;
-    y -= scr->buf_offset_y;
+    SGL_BUFFER_OFFSET(x, y);
     switch (dir) {
     case SGL_DIR_UP:
         for (i = 0; i < h; ++i) {
@@ -143,8 +141,7 @@ void sgl_show_rgb565_bitmap(sgl_screen_t *scr, int32_t x, int32_t y, int32_t w,
                             int32_t h, const uint16_t *bitmap, sgl_dir_t dir) {
     int32_t dx, dy, temp;
     uint32_t bmp_w = w, bmp_h = h, bmp_x, bmp_y, index, i, j;
-    x += scr->offset_x;
-    y += scr->offset_y;
+    SGL_LOGICAL_OFFSET(x, y);
     dx = x;
     dy = y;
     if (dir == SGL_DIR_UP || dir == SGL_DIR_DOWN) {
@@ -165,8 +162,7 @@ void sgl_show_rgb565_bitmap(sgl_screen_t *scr, int32_t x, int32_t y, int32_t w,
     dx = x - dx;
     dy = y - dy;
     sgl_rotate_bitmap(scr, &x, &y, &dx, &dy, w, h, bmp_w, bmp_h, &dir);
-    x -= scr->buf_offset_x;
-    y -= scr->buf_offset_y;
+    SGL_BUFFER_OFFSET(x, y);
     switch (dir) {
     case SGL_DIR_UP:
         for (i = 0; i < h; ++i) {

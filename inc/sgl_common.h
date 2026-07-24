@@ -10,6 +10,18 @@ extern "C" {
 
 #include "sgl_types.h"
 
+#define SGL_LOGICAL_OFFSET(x, y)                                               \
+    {                                                                          \
+        (x) += scr->logical_offset_x;                                          \
+        (y) += scr->logical_offset_y;                                          \
+    }
+
+#define SGL_BUFFER_OFFSET(x, y)                                                \
+    {                                                                          \
+        (x) -= scr->buffer_offset_x;                                           \
+        (y) -= scr->buffer_offset_y;                                           \
+    }
+
 static inline void sgl_set_rect(sgl_rect_t *rect, int32_t x, int32_t y,
                                 int32_t w, int32_t h) {
     rect->x = x;
