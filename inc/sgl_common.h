@@ -121,6 +121,19 @@ static inline void sgl_align(int32_t *x, int32_t *y, int32_t w, int32_t h,
     }
 }
 
+static inline void sgl_normalize_line(int32_t *posi, int32_t *len) {
+    if (*len < 0) {
+        *posi += *len + 1;
+        *len = -*len;
+    }
+}
+
+static inline void sgl_normalize_rect(int32_t *x, int32_t *y, int32_t *w,
+                                      int32_t *h) {
+    sgl_normalize_line(x, w);
+    sgl_normalize_line(y, h);
+}
+
 static inline int sgl_clip_line(int32_t *start, int32_t *len, int32_t min,
                                 int32_t max) {
     int32_t end;
@@ -147,6 +160,15 @@ static inline int sgl_clip_line(int32_t *start, int32_t *len, int32_t min,
             *start = max;
         *len = end - *start - 1;
     }
+    return 0;
+}
+
+static inline int sgl_clip_rect(int32_t *x, int32_t *y, int32_t *w, int32_t *h,
+                                sgl_area_t *bounds) {
+    if (sgl_clip_line(x, w, bounds->left, bounds->right))
+        return -1;
+    if (sgl_clip_line(y, h, bounds->top, bounds->bottom))
+        return -1;
     return 0;
 }
 
@@ -232,14 +254,6 @@ static inline void sgl_rotate_rect_ccw(sgl_screen_t *scr, int32_t *x,
         *h = -temp2;
         break;
     }
-    if (*w < 0) {
-        *x += *w + 1;
-        *w = -*w;
-    }
-    if (*h < 0) {
-        *y += *h + 1;
-        *h = -*h;
-    }
 }
 
 static inline void sgl_rotate_rect_cw(sgl_screen_t *scr, int32_t *x, int32_t *y,
@@ -267,14 +281,6 @@ static inline void sgl_rotate_rect_cw(sgl_screen_t *scr, int32_t *x, int32_t *y,
         *w = -*h;
         *h = temp2;
         break;
-    }
-    if (*w < 0) {
-        *x += *w + 1;
-        *w = -*w;
-    }
-    if (*h < 0) {
-        *y += *h + 1;
-        *h = -*h;
     }
 }
 

@@ -9,13 +9,10 @@ void sgl_draw_rect(sgl_screen_t *scr, int32_t x, int32_t y, int32_t w,
                    int32_t h, int is_filled, uint32_t color) {
     if (is_filled == 1 || (h > -2 && h < 2) || (w > -2 && w < 2)) {
         SGL_LOGICAL_OFFSET(x, y);
-        if (sgl_clip_line(&x, &w, scr->drawable_area.left,
-                          scr->drawable_area.right))
-            return;
-        if (sgl_clip_line(&y, &h, scr->drawable_area.top,
-                          scr->drawable_area.bottom))
+        if (sgl_clip_rect(&x, &y, &w, &h, &scr->drawable_area))
             return;
         sgl_rotate_rect_ccw(scr, &x, &y, &w, &h);
+        sgl_normalize_rect(&x, &y, &w, &h);
         SGL_BUFFER_OFFSET(x, y);
         if (w > h) {
             for (h += y; y < h; ++y) {

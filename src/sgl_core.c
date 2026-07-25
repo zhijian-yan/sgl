@@ -39,6 +39,7 @@ static void sgl_buffer_slice(sgl_screen_t *scr) {
         scr->slice_count = 0;
         temp = scr->dirty_rect;
         sgl_rotate_rect_ccw(scr, &temp.x, &temp.y, &temp.w, &temp.h);
+        sgl_normalize_rect(&temp.x, &temp.y, &temp.w, &temp.h);
     }
     if (scr->slice_state == SGL_SLICE_STATE_RUNNIG) {
         scr->buffer_offset_x = scr->dirty_rect.x;
@@ -56,6 +57,7 @@ static void sgl_buffer_slice(sgl_screen_t *scr) {
                      scr->buffer_offset_y, w_piece, h_piece);
         temp = scr->slice_rect;
         sgl_rotate_rect_cw(scr, &temp.x, &temp.y, &temp.w, &temp.h);
+        sgl_normalize_rect(&temp.x, &temp.y, &temp.w, &temp.h);
         sgl_rect2area(&temp, &scr->slice_area);
         if (scr->slice_count == scr->dirty_rect.h)
             scr->slice_state = SGL_SLICE_STATE_IDLE;
