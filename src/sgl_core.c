@@ -29,38 +29,39 @@ int sgl_init(sgl_screen_t *scr, void *buffer, uint32_t buffer_size,
 }
 
 static void sgl_buffer_slice(sgl_screen_t *scr) {
-    uint32_t w_cake, h_cake, w_piece, h_piece;
+    uint32_t w_piece, h_piece;
     sgl_rect_t temp;
     if (scr->slice_state == SGL_SLICE_STATE_IDLE) {
         scr->slice_state = SGL_SLICE_STATE_START;
     }
     if (scr->slice_state == SGL_SLICE_STATE_START) {
-        scr->slice_state = SGL_SLICE_STATE_RUNNIG;
+        if (scr->dirty_rect.w == 0 || scr->dirty_rect.h == 0)
+            return;
+        scr->frame_rect = scr->dirty_rect;
+        sgl_rotate_rect_ccw(scr, &scr->frame_rect.x, &scr->frame_rect.y,
+                            &scr->frame_rect.w, &scr->frame_rect.h);
+        sgl_normalize_rect(&scr->frame_rect.x, &scr->frame_rect.y,
+                           &scr->frame_rect.w, &scr->frame_rect.h);
         scr->slice_count = 0;
-        temp = scr->dirty_rect;
-        sgl_rotate_rect_ccw(scr, &temp.x, &temp.y, &temp.w, &temp.h);
-        sgl_normalize_rect(&temp.x, &temp.y, &temp.w, &temp.h);
+        scr->slice_state = SGL_SLICE_STATE_RUNNIG;
     }
     if (scr->slice_state == SGL_SLICE_STATE_RUNNIG) {
-        scr->buffer_offset_x = scr->dirty_rect.x;
-        scr->buffer_offset_y = scr->dirty_rect.y + scr->slice_count;
-        w_cake = scr->dirty_rect.w;
-        h_cake = scr->dirty_rect.h;
-        w_piece = w_cake;
-        h_piece = scr->pixel_num / w_cake;
-        h_cake -= scr->slice_count;
-        if (h_piece > h_cake)
-            h_piece = h_cake;
+        scr->buffer_offset_x = scr->frame_rect.x;
+        scr->buffer_offset_y = scr->frame_rect.y + scr->slice_count;
+        w_piece = scr->frame_rect.w;
+        h_piece = scr->pixel_num / scr->frame_rect.w;
+        if (h_piece > scr->frame_rect.h - scr->slice_count)
+            h_piece = scr->frame_rect.h - scr->slice_count;
         scr->buffer_width = w_piece;
         scr->slice_count += h_piece;
+        if (scr->slice_count == scr->frame_rect.h)
+            scr->slice_state = SGL_SLICE_STATE_IDLE;
         sgl_set_rect(&scr->slice_rect, scr->buffer_offset_x,
                      scr->buffer_offset_y, w_piece, h_piece);
         temp = scr->slice_rect;
         sgl_rotate_rect_cw(scr, &temp.x, &temp.y, &temp.w, &temp.h);
         sgl_normalize_rect(&temp.x, &temp.y, &temp.w, &temp.h);
         sgl_rect2area(&temp, &scr->slice_area);
-        if (scr->slice_count == scr->dirty_rect.h)
-            scr->slice_state = SGL_SLICE_STATE_IDLE;
     }
 }
 

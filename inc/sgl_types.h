@@ -132,6 +132,7 @@ struct sgl_screen {
     sgl_area_t widget_bounds;
     sgl_area_t dirty_area;
     sgl_area_t slice_area;
+    sgl_rect_t frame_rect;
     sgl_rect_t dirty_rect;
     sgl_rect_t slice_rect;
     uint32_t slice_count;
