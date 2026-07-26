@@ -68,12 +68,6 @@ void sgl_draw_vline(sgl_screen_t *scr, int32_t x, int32_t y, int32_t len,
 void sgl_draw_line(sgl_screen_t *scr, int32_t x0, int32_t y0, int32_t x1,
                    int32_t y1, uint32_t color) {
     int32_t dx, dy, sx, sy, err;
-    SGL_LOGICAL_OFFSET(x0, y0);
-    SGL_LOGICAL_OFFSET(x1, y1);
-    sgl_rotate_point_ccw(scr, &x0, &y0);
-    sgl_rotate_point_ccw(scr, &x1, &y1);
-    SGL_BUFFER_OFFSET(x0, y0);
-    SGL_BUFFER_OFFSET(x1, y1);
     dx = x1 - x0;
     dy = y1 - y0;
     sx = 1, sy = 1;
