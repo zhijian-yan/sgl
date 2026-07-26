@@ -34,22 +34,7 @@ void sgl_draw_rect(sgl_screen_t *scr, int32_t x, int32_t y, int32_t w,
 void sgl_draw_round_rect(sgl_screen_t *scr, int32_t x, int32_t y, int32_t w,
                          int32_t h, int32_t r, int is_filled, uint32_t color) {
     int32_t mw, mh;
-    if (w < 0) {
-        x += w + 1;
-        w = -w;
-    }
-    if (h < 0) {
-        y += h + 1;
-        h = -h;
-    }
-    if (r < 0)
-        r = -r;
-    if (r > (w >> 1))
-        r = (w >> 1);
-    if (r > (h >> 1))
-        r = (h >> 1);
-    mw = w - (r << 1);
-    mh = h - (r << 1);
+    sgl_normalize_rect(&x, &y, &w, &h);
     if (w <= 2 || h <= 2) {
         if (w > h) {
             for (h += y; y < h; ++y)
@@ -60,6 +45,16 @@ void sgl_draw_round_rect(sgl_screen_t *scr, int32_t x, int32_t y, int32_t w,
         }
         return;
     }
+    mw = w >> 1;
+    mh = h >> 1;
+    if (r < 0)
+        r = -r;
+    if (r > mw)
+        r = mw;
+    if (r > mh)
+        r = mh;
+    mw = w - (r << 1);
+    mh = h - (r << 1);
     if (is_filled == 0) {
         sgl_draw_hline(scr, x + r, y, mw, color);
         sgl_draw_hline(scr, x + r, y + h - 1, mw, color);
