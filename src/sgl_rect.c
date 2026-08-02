@@ -24,6 +24,7 @@ void sgl_draw_rect(sgl_screen_t *scr, int32_t x, int32_t y, int32_t w,
             }
         }
     } else {
+        sgl_normalize_rect(&x, &y, &w, &h);
         sgl_draw_hline(scr, x, y, w - 1, color);
         sgl_draw_vline(scr, x, y + 1, h - 1, color);
         sgl_draw_vline(scr, x + w - 1, y, h - 1, color);
