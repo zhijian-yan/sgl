@@ -51,7 +51,7 @@ static inline void sgl_rotate_bitmap(sgl_screen_t *scr, int32_t *x, int32_t *y,
         }
         break;
     }
-    *dir = (*dir + scr->rotate) & 3;
+    *dir = (sgl_dir_t)((*dir + scr->rotate) & 3);
 }
 
 void sgl_show_mono_bitmap(sgl_screen_t *scr, int32_t x, int32_t y, int32_t w,

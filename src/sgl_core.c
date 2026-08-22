@@ -49,7 +49,7 @@ static void sgl_buffer_slice(sgl_screen_t *scr) {
         scr->buffer_offset_x = scr->frame_rect.x;
         scr->buffer_offset_y = scr->frame_rect.y + scr->slice_count;
         w_piece = scr->frame_rect.w;
-        h_piece = scr->pixel_num / scr->frame_rect.w;
+        h_piece = (scr->pixel_num / scr->frame_rect.w) << scr->pixel_index;
         if (h_piece > scr->frame_rect.h - scr->slice_count)
             h_piece = scr->frame_rect.h - scr->slice_count;
         scr->buffer_width = w_piece;
@@ -119,10 +119,12 @@ int sgl_set_draw_pixel(sgl_screen_t *scr, uint32_t hor_res,
 static int sgl_set_color_format(sgl_screen_t *scr, uint32_t buffer_size,
                                 sgl_color_format_t color_format) {
     int ret = 0;
+    scr->pixel_index = 0;
     switch (color_format) {
     case SGL_COLOR_FORMAT_MONO:
         ret = sgl_set_draw_pixel(scr, scr->hor_res, buffer_size, 1,
                                  sgl_draw_pixel_mono);
+        scr->pixel_index = 3;
         break;
     case SGL_COLOR_FORMAT_RGB332:
         ret = sgl_set_draw_pixel(scr, scr->hor_res, buffer_size, 1,

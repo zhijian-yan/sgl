@@ -120,6 +120,7 @@ struct sgl_screen {
     uint32_t buffer_size;
     uint32_t buffer_width;
     uint32_t pixel_num;
+    uint32_t pixel_index;
     uint32_t hor_res;
     uint32_t ver_res;
     uint32_t max_x;
