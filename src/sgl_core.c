@@ -43,9 +43,9 @@ static void sgl_buffer_slice(sgl_screen_t *scr) {
         sgl_normalize_rect(&scr->frame_rect.x, &scr->frame_rect.y,
                            &scr->frame_rect.w, &scr->frame_rect.h);
         scr->slice_count = 0;
-        scr->slice_state = SGL_SLICE_STATE_RUNNIG;
+        scr->slice_state = SGL_SLICE_STATE_RUNNING;
     }
-    if (scr->slice_state == SGL_SLICE_STATE_RUNNIG) {
+    if (scr->slice_state == SGL_SLICE_STATE_RUNNING) {
         scr->buffer_offset_x = scr->frame_rect.x;
         scr->buffer_offset_y = scr->frame_rect.y + scr->slice_count;
         w_piece = scr->frame_rect.w;

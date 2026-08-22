@@ -63,9 +63,9 @@ void sgl_show_mono_bitmap(sgl_screen_t *scr, int32_t x, int32_t y, int32_t w,
     dx = x;
     dy = y;
     if (dir == SGL_DIR_UP || dir == SGL_DIR_DOWN) {
-        sgl_clip_rect(&x, &y, &w, &h, &scr->drawable_area);
+        sgl_clip_rect(&scr->drawable_area, &x, &y, &w, &h);
     } else {
-        sgl_clip_rect(&x, &y, &h, &w, &scr->drawable_area);
+        sgl_clip_rect(&scr->drawable_area, &x, &y, &h, &w);
     }
     dx = x - dx;
     dy = y - dy;
@@ -135,9 +135,9 @@ void sgl_show_rgb565_bitmap(sgl_screen_t *scr, int32_t x, int32_t y, int32_t w,
     dx = x;
     dy = y;
     if (dir == SGL_DIR_UP || dir == SGL_DIR_DOWN) {
-        sgl_clip_rect(&x, &y, &w, &h, &scr->drawable_area);
+        sgl_clip_rect(&scr->drawable_area, &x, &y, &w, &h);
     } else {
-        sgl_clip_rect(&x, &y, &h, &w, &scr->drawable_area);
+        sgl_clip_rect(&scr->drawable_area, &x, &y, &h, &w);
     }
     dx = x - dx;
     dy = y - dy;

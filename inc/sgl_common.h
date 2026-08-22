@@ -163,8 +163,8 @@ static inline int sgl_clip_line(int32_t *start, int32_t *len, int32_t min,
     return 0;
 }
 
-static inline int sgl_clip_rect(int32_t *x, int32_t *y, int32_t *w, int32_t *h,
-                                sgl_area_t *bounds) {
+static inline int sgl_clip_rect(sgl_area_t *bounds, int32_t *x, int32_t *y,
+                                int32_t *w, int32_t *h) {
     if (sgl_clip_line(x, w, bounds->left, bounds->right))
         return -1;
     if (sgl_clip_line(y, h, bounds->top, bounds->bottom))

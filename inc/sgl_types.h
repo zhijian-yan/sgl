@@ -66,7 +66,7 @@ typedef enum {
 typedef enum {
     SGL_SLICE_STATE_IDLE,
     SGL_SLICE_STATE_START,
-    SGL_SLICE_STATE_RUNNIG,
+    SGL_SLICE_STATE_RUNNING,
 } sgl_slice_state_t;
 
 typedef enum {
