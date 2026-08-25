@@ -58,30 +58,29 @@ static inline void sgl_rect2area(const sgl_rect_t *rect, sgl_area_t *area) {
         area->bottom = rect->y - rect->h - 1;
 }
 
-static inline void sgl_set_area_within(sgl_area_t *area,
-                                       const sgl_area_t *within, int32_t left,
-                                       int32_t top, int32_t right,
-                                       int32_t bottom) {
-    if (left < within->left)
-        left = within->left;
-    if (top < within->top)
-        top = within->top;
-    if (right > within->right)
-        right = within->right;
-    if (bottom > within->bottom)
-        bottom = within->bottom;
-    if (left > right)
-        left = right;
-    if (top > bottom)
-        top = bottom;
-    sgl_set_area(area, left, top, right, bottom);
-}
-
-static inline int sgl_check_area(sgl_area_t *bounds, int32_t left, int32_t top,
-                                 int32_t right, int32_t bottom) {
+static inline int sgl_check_area(const sgl_area_t *bounds, int32_t left,
+                                 int32_t top, int32_t right, int32_t bottom) {
     if (left > bounds->right || right < bounds->left || top > bounds->bottom ||
         bottom < bounds->top)
         return -1;
+    return 0;
+}
+
+static inline int sgl_set_area_within(sgl_area_t *area,
+                                      const sgl_area_t *bounds, int32_t left,
+                                      int32_t top, int32_t right,
+                                      int32_t bottom) {
+    if (sgl_check_area(bounds, left, top, right, bottom))
+        return -1;
+    if (left < bounds->left)
+        left = bounds->left;
+    if (top < bounds->top)
+        top = bounds->top;
+    if (right > bounds->right)
+        right = bounds->right;
+    if (bottom > bounds->bottom)
+        bottom = bounds->bottom;
+    sgl_set_area(area, left, top, right, bottom);
     return 0;
 }
 
@@ -163,8 +162,8 @@ static inline int sgl_clip_line(int32_t *start, int32_t *len, int32_t min,
     return 0;
 }
 
-static inline int sgl_clip_rect(sgl_area_t *bounds, int32_t *x, int32_t *y,
-                                int32_t *w, int32_t *h) {
+static inline int sgl_clip_rect(const sgl_area_t *bounds, int32_t *x,
+                                int32_t *y, int32_t *w, int32_t *h) {
     if (sgl_clip_line(x, w, bounds->left, bounds->right))
         return -1;
     if (sgl_clip_line(y, h, bounds->top, bounds->bottom))

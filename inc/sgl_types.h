@@ -115,6 +115,18 @@ struct sgl_widget {
     void *user_data;
 };
 
+typedef struct {
+    void *buffer;
+    uint32_t buffer_size;
+    sgl_color_format_t color_format;
+    sgl_rotate_t rotate;
+    uint32_t hor_res;
+    uint32_t ver_res;
+    void *user_data;
+    void (*frame_start)(void *user_data);
+    void (*frame_end)(void *user_data);
+} sgl_config_t;
+
 struct sgl_screen {
     void *buffer;
     uint32_t buffer_size;
@@ -141,8 +153,11 @@ struct sgl_screen {
     sgl_slice_state_t slice_state;
     sgl_rotate_t rotate;
     sgl_widget_t root_widget;
+    void *user_data;
     void (*flush)(void *buffer, sgl_rect_t *refresh);
     void (*draw_pixel)(sgl_screen_t *scr, int32_t x, int32_t y, uint32_t color);
+    void (*frame_start)(void *user_data);
+    void (*frame_end)(void *user_data);
 };
 
 #ifdef __cplusplus

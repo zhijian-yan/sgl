@@ -10,20 +10,20 @@
 static int sgl_set_color_format(sgl_screen_t *scr, uint32_t buffer_size,
                                 sgl_color_format_t color_format);
 
-int sgl_init(sgl_screen_t *scr, void *buffer, uint32_t buffer_size,
-             sgl_color_format_t color_format, sgl_rotate_t rotate,
-             uint32_t hor_res, uint32_t ver_res) {
-    if (!scr || !buffer)
+int sgl_init(sgl_screen_t *scr, sgl_config_t *config) {
+    if (!scr || !config || !config->buffer)
         return -1;
     memset(scr, 0, sizeof(sgl_screen_t));
-    scr->buffer = buffer;
-    scr->hor_res = hor_res;
-    scr->ver_res = ver_res;
-    if (sgl_set_color_format(scr, buffer_size, color_format))
+    scr->buffer = config->buffer;
+    scr->hor_res = config->hor_res;
+    scr->ver_res = config->ver_res;
+    scr->frame_start = config->frame_start;
+    scr->frame_end = config->frame_end;
+    if (sgl_set_color_format(scr, config->buffer_size, config->color_format))
         return -1;
     INIT_LIST_HEAD(&scr->root_widget.sibling);
     INIT_LIST_HEAD(&scr->root_widget.children);
-    sgl_set_screen_rotation(scr, rotate);
+    sgl_set_screen_rotation(scr, config->rotate);
     scr->dirty_rect = scr->root_widget.rect;
     return 0;
 }
@@ -37,6 +37,8 @@ static void sgl_buffer_slice(sgl_screen_t *scr) {
     if (scr->slice_state == SGL_SLICE_STATE_START) {
         if (scr->dirty_rect.w == 0 || scr->dirty_rect.h == 0)
             return;
+        if (scr->frame_start)
+            scr->frame_start(scr->user_data);
         scr->frame_rect = scr->dirty_rect;
         sgl_rotate_rect_ccw(scr, &scr->frame_rect.x, &scr->frame_rect.y,
                             &scr->frame_rect.w, &scr->frame_rect.h);
@@ -54,14 +56,15 @@ static void sgl_buffer_slice(sgl_screen_t *scr) {
             h_piece = scr->frame_rect.h - scr->slice_count;
         scr->buffer_width = w_piece;
         scr->slice_count += h_piece;
-        if (scr->slice_count == scr->frame_rect.h)
-            scr->slice_state = SGL_SLICE_STATE_IDLE;
         sgl_set_rect(&scr->slice_rect, scr->buffer_offset_x,
                      scr->buffer_offset_y, w_piece, h_piece);
         temp = scr->slice_rect;
         sgl_rotate_rect_cw(scr, &temp.x, &temp.y, &temp.w, &temp.h);
         sgl_normalize_rect(&temp.x, &temp.y, &temp.w, &temp.h);
         sgl_rect2area(&temp, &scr->slice_area);
+        if (scr->slice_count == scr->frame_rect.h) {
+            scr->slice_state = SGL_SLICE_STATE_IDLE;
+        }
     }
 }
 
@@ -72,14 +75,15 @@ static void sgl_draw(sgl_screen_t *scr, sgl_widget_t *widget, int32_t offset_x,
     sgl_area_t bounds;
     scr->logical_offset_x = offset_x;
     scr->logical_offset_y = offset_y;
-    sgl_set_area_within(&bounds, parent_bounds, offset_x, offset_y,
-                        offset_x + widget->rect.w - 1,
-                        offset_y + widget->rect.h - 1);
-    scr->widget_bounds = bounds;
-    scr->drawable_area = bounds;
-    draw = sgl_widget_get_draw(widget->draw_index);
-    if (draw)
-        draw(scr, widget);
+    if (sgl_set_area_within(&bounds, parent_bounds, offset_x, offset_y,
+                            offset_x + widget->rect.w - 1,
+                            offset_y + widget->rect.h - 1) == 0) {
+        scr->widget_bounds = bounds;
+        scr->drawable_area = bounds;
+        draw = sgl_widget_get_draw(widget->draw_index);
+        if (draw)
+            draw(scr, widget);
+    }
     list_for_each_entry(child, &widget->children, sibling) {
         sgl_draw(scr, child, offset_x + child->rect.x, offset_y + child->rect.y,
                  &bounds);
@@ -91,8 +95,11 @@ void sgl_handler(sgl_screen_t *scr) {
     sgl_draw(scr, &scr->root_widget, scr->root_widget.rect.x,
              scr->root_widget.rect.y, &scr->slice_area);
     scr->flush(scr->buffer, &scr->slice_rect);
-    if (scr->slice_state == SGL_SLICE_STATE_IDLE)
+    if (scr->slice_state == SGL_SLICE_STATE_IDLE) {
         ++scr->frame_count;
+        if (scr->frame_end)
+            scr->frame_end(scr->user_data);
+    }
 }
 
 void sgl_set_flush(sgl_screen_t *scr,
@@ -188,10 +195,10 @@ void sgl_reset_dirty_area(sgl_screen_t *scr) {
     // scr->dirty_area = scr->root_widget.area;
 }
 
-void sgl_set_drawable_area(sgl_screen_t *scr, int32_t left, int32_t top,
-                           int32_t right, int32_t bottom) {
-    sgl_set_area_within(&scr->drawable_area, &scr->widget_bounds, left, top,
-                        right, bottom);
+int sgl_set_drawable_area(sgl_screen_t *scr, int32_t left, int32_t top,
+                          int32_t right, int32_t bottom) {
+    return sgl_set_area_within(&scr->drawable_area, &scr->widget_bounds, left,
+                               top, right, bottom);
 }
 
 void sgl_reset_drawable_area(sgl_screen_t *scr) {
