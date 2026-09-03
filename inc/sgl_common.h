@@ -283,6 +283,42 @@ static inline void sgl_rotate_rect_cw(sgl_screen_t *scr, int32_t *x, int32_t *y,
     }
 }
 
+static inline void sgl_rotate_area_ccw(sgl_screen_t *scr, int32_t *left,
+                                       int32_t *top, int32_t *right,
+                                       int32_t *bottom) {
+    int32_t temp;
+    sgl_rotate_point_ccw(scr, left, top);
+    sgl_rotate_point_ccw(scr, right, bottom);
+    if (*left > *right) {
+        temp = *left;
+        *left = *right;
+        *right = temp;
+    }
+    if (*top > *bottom) {
+        temp = *top;
+        *top = *bottom;
+        *bottom = temp;
+    }
+}
+
+static inline void sgl_rotate_area_cw(sgl_screen_t *scr, int32_t *left,
+                                      int32_t *top, int32_t *right,
+                                      int32_t *bottom) {
+    int32_t temp;
+    sgl_rotate_point_cw(scr, left, top);
+    sgl_rotate_point_cw(scr, right, bottom);
+    if (*left > *right) {
+        temp = *left;
+        *left = *right;
+        *right = temp;
+    }
+    if (*top > *bottom) {
+        temp = *top;
+        *top = *bottom;
+        *bottom = temp;
+    }
+}
+
 void sgl_draw_circle_section(sgl_screen_t *scr, int32_t xc, int32_t yc,
                              int32_t r, int32_t offset_x, int32_t offset_y,
                              uint32_t color);
